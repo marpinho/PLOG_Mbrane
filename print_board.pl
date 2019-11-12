@@ -1,4 +1,4 @@
-:- use_module(library(lists)).
+% :- use_module(library(lists)).
 
 % Representação interna
 %	'-1' - Representa o espaço vazio
@@ -6,12 +6,11 @@
 %	'[10-19]' - Representa os números do jogador 2
 
 
-start :- 
-	% init_board(Board),
-	switch_board(Board),
- 	display_game_name, 
-	printColumnIdentifiers, nl,
- 	display_board(Board).
+% start :- 
+% 	switch_board(Board),
+%  	display_game_name, 
+% 	printColumnIdentifiers, nl,
+%  	display_board(Board).
 
 display_game_name :- nl,
 	write('                    |\\    /|  |                           '), nl,
@@ -78,8 +77,7 @@ print_line([H|T], X) :-
 
 
 
-switch_board(BoardVis) :-
-	init_board(Board), 
+switch_board(Board, BoardVis) :-
 	replace(Board, [], BoardVis).
 
 replace([], L, L).
