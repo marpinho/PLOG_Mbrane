@@ -6,12 +6,6 @@
 %	'[10-19]' - Representa os números do jogador 2
 
 
-% start :- 
-% 	switch_board(Board),
-%  	display_game_name, 
-% 	printColumnIdentifiers, nl,
-%  	display_board(Board).
-
 display_game_name :- nl,
 	write('                    |\\    /|  |                           '), nl,
 	write('                    | \\  / |  |___    __  ___   __    ___ '), nl,
@@ -55,8 +49,9 @@ init_board([
 % 		 ['  ', '  ','  ','  ','  ','  ','  ','  ','  ']
 % 		]).
 
-display_board(Board) :-
-	print_rows(Board, 1), nl.
+display_board(Board, Regions) :-
+	print_rows(Board, 1), nl, 
+	display_regions_points(Regions).
 
 print_rows([], _).
 
@@ -75,6 +70,10 @@ print_line([H|T], X) :-
 	N is X+1,
 	print_rows(T, N).
 
+
+display_regions_points(Regions) :-
+	nl,
+	format(' R1: ~d | R2: ~d | R3: ~d | R4: ~d | R5: ~d | R6: ~d | R7: ~d | R8: ~d | R9: ~d ', Regions), nl.
 
 
 switch_board(Board, BoardVis) :-

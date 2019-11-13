@@ -1,5 +1,6 @@
 :- [print_board].
 :- [board_verifications].
+:- [game_verifications].
 
 
 
@@ -65,6 +66,20 @@ b_teste4([
 	[7, 1, 7, 8, 1, 18, 9, 1, 9]
 ]).
 
+b_teste5([
+	[11, -1, -1, -1, -1, -1, -1, 11, -1],
+	[-1, 11, -1, 3, 5, -1, -1, 5, 11],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
+]).
+
+
+init_reg([0,0,0,0,0,0,0,0,0]).
 
 
 teste :- b_teste(B), verify_horizontally(B).
@@ -81,9 +96,14 @@ teste5 :- b_teste3(Board), verify_regions(Board, Board, 0, 0).
 
 teste6(NewB) :- b_teste4(Board), convert_board(Board, [], NewB).
 
-% start :- 
-%     b_teste3(B),
-% 	switch_board(B, Board),
-%  	display_game_name, 
-% 	printColumnIdentifiers, nl,
-%  	display_board(Board).
+teste7(L) :- conv([10,11,12,13,14], L).
+
+teste8(L) :- b_teste4(Board), region_points(Board, Board, 0, 0, [], L).
+
+start :- 
+    b_teste3(B),
+    init_reg(Regions),
+	switch_board(B, Board),
+ 	display_game_name, 
+	printColumnIdentifiers, nl,
+ 	display_board(Board, Regions).

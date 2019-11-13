@@ -1,6 +1,7 @@
 :- [print_board].
 
 
+
 verify_board(Board) :-
     convert_board(Board, [], ConvBoard),
     verify_regions(Board, ConvBoard, 0, 0),
@@ -59,6 +60,7 @@ get_region([_H|T], Imin, Imax, Jmin, Jmax, Cnt, ListTmp, NewRegion) :-
     Cnt1 is Cnt + 1,
     get_region(T, Imin, Imax, Jmin, Jmax, Cnt1, ListTmp, NewRegion).
 
+
 get_row(_, Jmax, Jmax, NewList, NewList).
 get_row(List, Jmin, Jmax, ListTmp, NewList) :-
     Jmin < Jmax,
@@ -82,11 +84,12 @@ verify_vertically([_|T], Board, I) :-
     I1 is I + 1,
     verify_vertically(T, Board, I1).
 
-% get_col(+Tabuleiro, +Indice, +ListaTmp, -NovaLista)
+% get_col(+Tabuleiro, +I, +ListaTmp, -NovaLista)
 % Tabuleiro - Tabuleiro no qual o predicado vai efetuar a pesquisa dos números 
-%               que estão na coluna, cuja a posição é igual à variável Indice. 
-% Indice -  Variável que indica a posição da coluna.
-% ListaTmp -  Lista que vai armazenar os números do tabuleiro ao longo do "varrimento"
+%               que estão na coluna de indice I. 
+% Indice - Variável que indica a posição da coluna.
+% ListaTmp - Lista temporária que vai armazenar os números do tabuleiro ao longo do ciclo recursivo.
+% NovaLista - Lista com os elementos da coluna de indice I.
 get_col([], _I, NewCol, NewCol).
 get_col([H|T], I, Num, NewCol) :-
     get_number(H, 0, I, NewNum),
