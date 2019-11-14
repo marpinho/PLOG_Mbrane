@@ -1,8 +1,39 @@
 :- [print_board].
 :- [board_verifications].
 
+% initialize values ----------------------------------------------------
 
-% Representação das Regiões por uma lista (Regions) tamanho 9.
+init_reg([0,0,0,0,0,0,0,0,0]).
+
+init_board([
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
+]).
+
+init_player(1).
+
+
+% player vs player --------------------------------------------------------
+
+game_1(Board, Regions, Player):-
+    display_game(Board, Regions, Player).
+
+get_new_play(Col, Row, Num):-
+    write('column: '), nl,
+    read(Col),
+    write('row: '), nl,
+    read(Row),
+    write('number: '), nl,
+    read(Num).
+
+% Representação das Regiões por uma lista (Regions) tamanho 9. --------------
 
 region_points([], _Board, _I, _J, Regions_p, Regions_p).
 region_points(List, _Board, I, J, TmpList, Regions_p) :-
