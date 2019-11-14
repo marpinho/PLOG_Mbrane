@@ -116,7 +116,6 @@ display_choices :-
 	write('4. Quit').
 
 
-
 % messages ----------------------------------------------------------------
 not_implemented :-
     nl, write('--This mode is not yet available--'),
