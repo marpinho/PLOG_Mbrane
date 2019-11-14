@@ -80,7 +80,20 @@ b_teste5([
 ]).
 
 
-init_reg([0.5,0,0,0,0,0,0,0,0]).
+b_teste6([
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, 8, 16, -1, 1, -1, 4, 17, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
+]).
+
+init_reg([0,0,0,0,0,0,0,0,0]).
+init_reg2([-13,8,0,8,8,0,0,0,0]).
 
 
 teste :- b_teste(B), verify_horizontally(B).
@@ -99,10 +112,14 @@ teste6(NewB) :- b_teste4(Board), convert_board(Board, [], NewB).
 
 teste7(L) :- conv([10,11,12,13,14], L).
 
-teste8(L) :- b_teste4(Board), region_points(Board, Board, 0, 0, [], L).
-t(T) :- T is 3/2.
+teste8(L) :- b_teste4(Board), init_reg(Reg), region_points(Reg, Board, New_reg).
+t(T) :- T is -3/2.
 
 teste9(L) :- replace_value_list([1,2,3,4,5,6], 0, 3, 12, [], L).
+
+teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board, 0, 0, Reg, New_reg).
+
+teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
 start :- 
     b_teste3(B),

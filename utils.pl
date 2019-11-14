@@ -32,22 +32,12 @@ map(18, 'Y8').
 map(19, 'Y9').
 
 
-get_region_pos(1, 'TLC').
-get_region_pos(2, 'T').
-get_region_pos(3, 'TRC').
-get_region_pos(4, 'L').
-get_region_pos(5, 'C').
-get_region_pos(6, 'R').
-get_region_pos(7, 'BLC').
-get_region_pos(8, 'B').
-get_region_pos(9, 'BLC').
-
-region_neighbours(1, [2, 5, 4]).
-region_neighbours(2, [3, 6, 5, 4, 1]).
-region_neighbours(3, [6, 5, 2]).
-region_neighbours(4, [1, 2, 5, 8, 7]).
-region_neighbours(5, [1, 2, 3, 6, 9, 8, 4]).
-region_neighbours(6, [9, 8, 5, 2, 3]).
-region_neighbours(7, [4, 5, 8]).
-region_neighbours(8, [7, 4, 5, 6, 9]).
-region_neighbours(9, [8, 5, 6]).
+region_neighbours(0, [2, 4, 3]).
+region_neighbours(1, [2, 5, 4, 3, 0]).
+region_neighbours(2, [5, 4, 1]).
+region_neighbours(3, [0, 1, 4, 7, 6]).
+region_neighbours(4, [0, 1, 2, 5, 8, 7, 3]).
+region_neighbours(5, [8, 7, 4, 1, 2]).
+region_neighbours(6, [3, 4, 7]).
+region_neighbours(7, [6, 3, 4, 5, 8]).
+region_neighbours(8, [7, 4, 5]).
