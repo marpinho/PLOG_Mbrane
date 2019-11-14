@@ -1,3 +1,4 @@
+:- [utils].
 :- [print_board].
 :- [board_verifications].
 :- [game_verifications].
@@ -79,7 +80,7 @@ b_teste5([
 ]).
 
 
-init_reg([0,0,0,0,0,0,0,0,0]).
+init_reg([0.5,0,0,0,0,0,0,0,0]).
 
 
 teste :- b_teste(B), verify_horizontally(B).
@@ -92,13 +93,16 @@ teste4 :- init_board(B3), verify_board(B3).
 
 %get_region([H|T], Imin, Imax, Jmin, Jmax, Cnt, ListTmp, NewRegion)
 % teste5(L) :- b_teste3(B3), get_region(B3, 3, 6, 3, 6, 0, [], L).
-teste5 :- b_teste3(Board), verify_regions(Board, Board, 0, 0).
+teste5 :- b_teste(Board), verify_regions(Board, Board, 0, 0).
 
 teste6(NewB) :- b_teste4(Board), convert_board(Board, [], NewB).
 
 teste7(L) :- conv([10,11,12,13,14], L).
 
 teste8(L) :- b_teste4(Board), region_points(Board, Board, 0, 0, [], L).
+t(T) :- T is 3/2.
+
+teste9(L) :- replace_value_list([1,2,3,4,5,6], 0, 3, 12, [], L).
 
 start :- 
     b_teste3(B),

@@ -1,5 +1,9 @@
+% Imports
+
+:- [utils].
 :- [print_board].
 
+%----------------
 
 
 verify_board(Board) :-
@@ -64,7 +68,7 @@ get_region([_H|T], Imin, Imax, Jmin, Jmax, Cnt, ListTmp, NewRegion) :-
 get_row(_, Jmax, Jmax, NewList, NewList).
 get_row(List, Jmin, Jmax, ListTmp, NewList) :-
     Jmin < Jmax,
-    get_number(List, 0, Jmin, Number),
+    get_number_row(List, 0, Jmin, Number),
     append(ListTmp, [Number], Reg),
     Cnt is Jmin + 1,
     get_row(List, Cnt, Jmax, Reg, NewList).
@@ -92,16 +96,22 @@ verify_vertically([_|T], Board, I) :-
 % NovaLista - Lista com os elementos da coluna de indice I.
 get_col([], _I, NewCol, NewCol).
 get_col([H|T], I, Num, NewCol) :-
-    get_number(H, 0, I, NewNum),
+    get_number_row(H, 0, I, NewNum),
     append([NewNum], Num, NewList),
     get_col(T, I, NewList, NewCol).
 
 
+get_number([Row|_], I, I, J, NewNum) :- 
+    get_number_row(Row, 0, J, NewNum).
+get_number([_H|T], Inc, I, J, NewNum) :-
+    Inc1 is Inc + 1,
+    get_number(T, Inc1, I, J, NewNum).
 
-get_number([H|_T], I, I, H).
-get_number([_H|T], I2, I, NewNum) :-
+
+get_number_row([H|_T], I, I, H).
+get_number_row([_H|T], I2, I, NewNum) :-
     X1 is I2 + 1,
-    get_number(T, X1, I, NewNum).
+    get_number_row(T, X1, I, NewNum).
 
 
 % Verifica se existe algum número em duplicado nas linhas do tabuleiro 
