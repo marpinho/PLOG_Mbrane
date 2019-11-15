@@ -26,22 +26,61 @@ init_player(1).
 % player vs player --------------------------------------------------------
 
 game_1(Board, Regions, Player):-
-    display_game(Board, Regions, Player).
+    get_new_play(Player, Col, Row, Num),
+    write(Col), nl,
+    write(Row), nl,
+    write(Num), nl, 
+    change_player(Player, Next),
+    write(Next), nl, 
+    display_game(Board, Regions, Next),
+    game_1(Board, Regions, Next).
 
-get_new_play(Col, Row, Num):-
+
+get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
     read(Col),
+    map_col(Col,IntCol),
     write('row: '), nl,
     read(Row),
+    IntRow is Row  - 1,
     write('number: '), nl,
-    read(Num).
+    read(Num),    
+    get_internal_rep(Player, Num, IntNum).
+
+get_internal_rep(Player, Num, Inum):-
+    Player == 2,
+    map_y(Num,Inum).
+get_internal_rep(Player, Num, Inum):-
+    Player == 1,
+    Inum = Num.
+
+add_play(Board, Col, Row , Num, NewBoard):-
+    replace_value_matrix( Board, Col, Row, Num, [], NewBoard, 0).
+    
+replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter < Row,
+    C is Counter + 1,
+    concat(TmpList, [H], Tmp),
+    replace_value_matrix(T, Col, Row, Num, Tmp, NewBoard, C).
+
+replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter == Row,
+    replace_value_list(H, Col, Num, NewRow),
+    concat(TmpList, [NewRow|T], NewBoard).
+
+change_player(Player, Next):-
+    Player == 1,
+    Next is 2.
+change_player(Player, Next):-
+    Player == 2,
+    Next is 1.
+
 
 % Representação das Regiões por uma lista (Regions) tamanho 9. --------------
 
 regions_points(Board, Regions, NewRegions_P) :-
     power_points(Regions, Board, 0, 0, [], Regions_tmp),
     influence_points(Regions, Board, 0, 0, Regions_tmp, NewRegions_P).
-    % format('I: ~d ~d ~d ~d ~d ~d ~d ~d ~d ', NewRegions_P), nl.
 
 
 
@@ -192,6 +231,7 @@ update_region_point(Regions_points, Sum_Numbers, Id_R, Regions_Update) :-
     get_number_row(Regions_points, 0, Id_R, Old_Reg_P), % Retorna a pontuação da zona fronteiriça da região Id_R
     New_P is Sum_Numbers + Old_Reg_P, % Soma o novo valor com a pontuação anterior da região
     replace_value_list(Regions_points, 0, Id_R, New_P, [], Regions_Update). % Atualiza a lista das pontuações das regiões
+%   replace_value_list(Regions_points, Id_R, New_P, Regions_Update). 
 
 
 convert_number(-1, 0).

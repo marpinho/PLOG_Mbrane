@@ -7,7 +7,6 @@ run :-
     read(Choice),
     start(Choice).
 
-
 % game modes ---------------------------------------------
 start(Choice) :- 
     Choice == 1,
