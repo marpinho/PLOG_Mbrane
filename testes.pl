@@ -100,6 +100,4 @@ teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, N
 
 teste12(L) :- update_region_point([0,0,0,0,0,0,0,0,0], 22, 1, L).
 
-start :- 
-    get_new_play(Player, Col, Row, Num).
 

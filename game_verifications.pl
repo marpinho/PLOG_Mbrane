@@ -20,6 +20,7 @@ init_board([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
 ]).
 
+
 init_player(1).
 
 
@@ -27,14 +28,10 @@ init_player(1).
 
 game_1(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
-    write(Col), nl,
-    write(Row), nl,
-    write(Num), nl, 
+    replace_value_matrix(Board, Col, Row, Num, NewBoard),
     change_player(Player, Next),
-    write(Next), nl, 
-    display_game(Board, Regions, Next),
-    game_1(Board, Regions, Next).
-
+    display_game(NewBoard, Regions, Next),
+    game_1(NewBoard, Regions, Next).
 
 get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
@@ -54,20 +51,6 @@ get_internal_rep(Player, Num, Inum):-
     Player == 1,
     Inum = Num.
 
-add_play(Board, Col, Row , Num, NewBoard):-
-    replace_value_matrix( Board, Col, Row, Num, [], NewBoard, 0).
-    
-replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
-    Counter < Row,
-    C is Counter + 1,
-    concat(TmpList, [H], Tmp),
-    replace_value_matrix(T, Col, Row, Num, Tmp, NewBoard, C).
-
-replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
-    Counter == Row,
-    replace_value_list(H, Col, Num, NewRow),
-    concat(TmpList, [NewRow|T], NewBoard).
-
 change_player(Player, Next):-
     Player == 1,
     Next is 2.
@@ -81,7 +64,6 @@ change_player(Player, Next):-
 regions_points(Board, Regions, NewRegions_P) :-
     power_points(Regions, Board, 0, 0, [], Regions_tmp),
     influence_points(Regions, Board, 0, 0, Regions_tmp, NewRegions_P).
-
 
 
 power_points([], _Board, _I, _J, Regions_p, Regions_p).
@@ -132,24 +114,25 @@ influence_points([_|T], Board, I, J, Old_Region_P, N_Regions_p) :-
     Jmax is Jmin + 3,
     Id_R is I*3 + J,
     get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion),
-    calculate_influence(NewRegion, Id_R, Old_Region_P, Regions_points_tmp),
+    calculate_influence(NewRegion, Id_R, Old_Region_P, New_Regions_points),
     J1 is J + 1,
-    influence_points(T, Board, I, J1, Regions_points_tmp, N_Regions_p).
+    influence_points(T, Board, I, J1, New_Regions_points, N_Regions_p).
 
 
 
 
 % Calcula a Influencia da região 1 sobre as suas regiões vizinhas
+% calculate_influence(_Region, 1, R, R).
+% calculate_influence(_Region, 2, R, R).
 % calculate_influence(_Region, 3, R, R).
-calculate_influence(_Region, 4, R, R).
-calculate_influence(_Region, 5, R, R).
-calculate_influence(_Region, 6, R, R).
-calculate_influence(_Region, 7, R, R).
-calculate_influence(_Region, 8, R, R).
-% calculate_influence(_Region, 9, R, R).
+% calculate_influence(_Region, 4, R, R).
+% calculate_influence(_Region, 5, R, R).
+% calculate_influence(_Region, 6, R, R).
+% calculate_influence(_Region, 7, R, R).
+% calculate_influence(_Region, 8, R, R).
+calculate_influence(_Region, 9, R, R).
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
     Region_Id == 0, !,
-    
     get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
     update_region_point(Regions_points, Sum_Numbers_R, 1, Regions_Update), % Altera a Pontuação da Região à sua direita 
     
