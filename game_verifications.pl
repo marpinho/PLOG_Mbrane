@@ -140,23 +140,21 @@ influence_points([_|T], Board, I, J, Old_Region_P, N_Regions_p) :-
 
 
 % Calcula a Influencia da região 1 sobre as suas regiões vizinhas
-calculate_influence(_Region, 3, R, R).
+% calculate_influence(_Region, 3, R, R).
 calculate_influence(_Region, 4, R, R).
 calculate_influence(_Region, 5, R, R).
 calculate_influence(_Region, 6, R, R).
 calculate_influence(_Region, 7, R, R).
 calculate_influence(_Region, 8, R, R).
+% calculate_influence(_Region, 9, R, R).
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
     Region_Id == 0, !,
     
     get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
     update_region_point(Regions_points, Sum_Numbers_R, 1, Regions_Update), % Altera a Pontuação da Região à sua direita 
     
-    get_number_row(Region, 0, 8, NDiag),
-    convert_number(NDiag, NDiag_N),
-    New_R_P2 is NDiag_N/2,
-    replace_value_list(Regions_Update, 0, 4, New_R_P2, [], Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à direita
-    
+    update_diag_region(Regions_Update, Region, 8, 4, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à direita
+
     get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
     update_region_point(Regions_Update_II, Sum_Numbers_D, 3, NewRegions_points). % Altera a Pontuação da Região abaixo
 
@@ -166,19 +164,13 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
     get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
     update_region_point(Regions_points, Sum_Numbers_R, 2, Regions_Update), % Altera a Pontuação da Região à sua direita 
      
-    get_number_row(Region, 0, 8, NDiag),
-    convert_number(NDiag, NDiag_N),
-    New_R_P2 is NDiag_N/2,
-    replace_value_list(Regions_Update, 0, 5, New_R_P2, [], Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à direita
-    
+    update_diag_region(Regions_Update, Region, 8, 5, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à direita
+
     get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
     update_region_point(Regions_Update_II, Sum_Numbers_D, 4, Regions_Update_III), % Altera a Pontuação da Região abaixo
     
-    get_number_row(Region, 0, 6, NDiag2),
-    convert_number(NDiag2, NDiag_N2),
-    New_R_P3 is NDiag_N2/2,
-    replace_value_list(Regions_Update_III, 0, 3, New_R_P3, [], Regions_Update_IV), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
-    
+    update_diag_region(Regions_Update_III, Region, 6, 3, Regions_Update_IV), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
+
     get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira na esquerda
     update_region_point(Regions_Update_IV, Sum_Numbers_L, 0, NewRegions_points). % Altera a Pontuação da Região à sua esquerda 
     
@@ -191,47 +183,127 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
     get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
     update_region_point(Regions_points, Sum_Numbers_D, 5, Regions_Update), % Altera a Pontuação da Região abaixo
     
-    get_number_row(Region, 0, 6, NDiag2),
-    convert_number(NDiag2, NDiag_N2),
-    New_R_P3 is NDiag_N2/2,
-    replace_value_list(Regions_Update, 0, 4, New_R_P3, [], Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
-    
+    update_diag_region(Regions_Update, Region, 6, 4, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
+
     get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira na esquerda
     update_region_point(Regions_Update_II, Sum_Numbers_L, 1, NewRegions_points). % Altera a Pontuação da Região à sua esquerda 
 
 % Calcula a Influencia da região 4 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 3, !.
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 3, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 0, Regions_Update), % Altera a Pontuação da Região acima
+   
+    update_diag_region(Regions_Update, Region, 2, 1, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal alta à direita
 
-% % Calcula a Influencia da região 5 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 4, !.
+    get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
+    update_region_point(Regions_Update_II, Sum_Numbers_R, 4, Regions_Update_III), % Altera a Pontuação da Região à sua direita 
 
-% % Calcula a Influencia da região 6 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 5, !.
+    update_diag_region(Regions_Update_III, Region, 8, 7, Regions_Update_IV), % Altera a Pontuação da Região na sua diagonal baixa à direita
 
-% % Calcula a Influencia da região 7 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 6, !.
-
-% % Calcula a Influencia da região 8 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 7, !.
-
-% % Calcula a Influencia da região 9 sobre as suas regiões vizinhas
-% calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-%     Region_Id == 8, !.
+    get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
+    update_region_point(Regions_Update_IV, Sum_Numbers_D, 6, NewRegions_points). % Altera a Pontuação da Região abaixo 
 
 
+% Calcula a Influencia da região 5 sobre as suas regiões vizinhas
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 4, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 1, Regions_Update), % Altera a Pontuação da Região acima
+   
+    update_diag_region(Regions_Update, Region, 2, 2, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal alta à direita
 
+    get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
+    update_region_point(Regions_Update_II, Sum_Numbers_R, 5, Regions_Update_III), % Altera a Pontuação da Região à sua direita 
+
+    update_diag_region(Regions_Update_III, Region, 8, 8, Regions_Update_IV), % Altera a Pontuação da Região na sua diagonal baixa à direita
+
+    get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
+    update_region_point(Regions_Update_IV, Sum_Numbers_D, 7, Regions_Update_V), % Altera a Pontuação da Região abaixo 
+
+    update_diag_region(Regions_Update_V, Region, 6, 6, Regions_Update_VI), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
+
+    get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira à esquerda
+    update_region_point(Regions_Update_VI, Sum_Numbers_L, 3, Regions_Update_VII), % Altera a Pontuação da Região à esquerda 
+
+    update_diag_region(Regions_Update_VII, Region, 0, 0, NewRegions_points). % Altera a Pontuação da Região na sua diagonal alta à esquerda
+
+
+% Calcula a Influencia da região 6 sobre as suas regiões vizinhas
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 5, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 2, Regions_Update_II), % Altera a Pontuação da Região acima
+   
+    get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
+    update_region_point(Regions_Update_II, Sum_Numbers_D, 8, Regions_Update_III), % Altera a Pontuação da Região abaixo 
+
+    update_diag_region(Regions_Update_III, Region, 6, 7, Regions_Update_IV), % Altera a Pontuação da Região na sua diagonal baixa à esquerda
+
+    get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira à esquerda
+    update_region_point(Regions_Update_IV, Sum_Numbers_L, 4, Regions_Update_V), % Altera a Pontuação da Região à esquerda 
+
+    update_diag_region(Regions_Update_V, Region, 0, 1, NewRegions_points). % Altera a Pontuação da Região na sua diagonal alta à esquerda
+
+% Calcula a Influencia da região 7 sobre as suas regiões vizinhas
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 6, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 3, Regions_Update), % Altera a Pontuação da Região acima
+   
+    update_diag_region(Regions_Update, Region, 2, 4, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal alta à direita
+
+    get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
+    update_region_point(Regions_Update_II, Sum_Numbers_R, 7, NewRegions_points). % Altera a Pontuação da Região à sua direita 
+
+
+
+% Calcula a Influencia da região 8 sobre as suas regiões vizinhas
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 7, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 4, Regions_Update), % Altera a Pontuação da Região acima
+   
+    update_diag_region(Regions_Update, Region, 2, 5, Regions_Update_II), % Altera a Pontuação da Região na sua diagonal alta à direita
+
+    get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
+    update_region_point(Regions_Update_II, Sum_Numbers_R, 8, Regions_Update_III), % Altera a Pontuação da Região à sua direita 
+
+    get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira à esquerda
+    update_region_point(Regions_Update_III, Sum_Numbers_L, 6, Regions_Update_IV), % Altera a Pontuação da Região à esquerda 
+
+    update_diag_region(Regions_Update_IV, Region, 0, 3, NewRegions_points). % Altera a Pontuação da Região na sua diagonal alta à esquerda
+
+
+% Calcula a Influencia da região 9 sobre as suas regiões vizinhas
+calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
+    Region_Id == 8, !,
+    get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
+    update_region_point(Regions_points, Sum_Numbers_U, 5, Regions_Update), % Altera a Pontuação da Região acima
+   
+    get_numbers_left(Region, Sum_Numbers_L), % Vai buscar a soma dos valores que fazem fronteira à esquerda
+    update_region_point(Regions_Update, Sum_Numbers_L, 7, Regions_Update_II), % Altera a Pontuação da Região à esquerda 
+
+    update_diag_region(Regions_Update_II, Region, 0, 4, NewRegions_points). % Altera a Pontuação da Região na sua diagonal alta à esquerda
+
+
+
+
+update_diag_region(Regions_points, Region, Id_diag, Id_R, Regions_Update) :-
+    get_number_row(Region, 0, Id_diag, NDiag),
+    convert_number(NDiag, NDiag_N),
+    New_R_P is NDiag_N/2,
+    get_number_row(Regions_points, 0, Id_R, Old_R_P),
+    Value is New_R_P + Old_R_P,
+    replace_value_list(Regions_points, 0, Id_R, Value, [], Regions_Update). % Altera a Pontuação da Região na sua diagonal baixa à direita
+ 
 
 
 update_region_point(Regions_points, Sum_Numbers, Id_R, Regions_Update) :-
     get_number_row(Regions_points, 0, Id_R, Old_Reg_P), % Retorna a pontuação da zona fronteiriça da região Id_R
     New_P is Sum_Numbers + Old_Reg_P, % Soma o novo valor com a pontuação anterior da região
     replace_value_list(Regions_points, 0, Id_R, New_P, [], Regions_Update). % Atualiza a lista das pontuações das regiões
-%   replace_value_list(Regions_points, Id_R, New_P, Regions_Update). 
+
 
 
 convert_number(-1, 0).
