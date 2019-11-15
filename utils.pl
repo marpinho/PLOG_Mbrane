@@ -3,6 +3,10 @@ concat([X|L1], L2, [X|L3]) :- concat(L1, L2, L3).
 
 replace_value_list([_H|T], Pos, Pos, Val, TmpList, L) :-
     concat(TmpList, [Val|T], L).
+
+replace_value_list([H|T], Pos, Val, L):-
+    replace_value_list([H|T], 0, Pos, Val, [], L).
+
 replace_value_list([H|T], Pos_Ini, Pos, Val, TmpList, L) :-
     Pos_Ini < Pos,
     I is Pos_Ini + 1,
@@ -30,6 +34,29 @@ map(16, 'Y6').
 map(17, 'Y7').
 map(18, 'Y8').
 map(19, 'Y9').
+
+map_y(0, 10).
+map_y(1, 11).
+map_y(2, 12).
+map_y(3, 13).
+map_y(4, 14).
+map_y(5, 15).
+map_y(6, 16).
+map_y(7, 17).
+map_y(8, 18).
+map_y(9, 19).
+
+map_col('a',0).
+map_col('b',1).
+map_col('c',2).
+map_col('d',3).
+map_col('e',4).
+map_col('f',5).
+map_col('g',6).
+map_col('h',7).
+map_col('i',8).
+map_col(_,-1).
+
 
 
 region_neighbours(0, [2, 4, 3]).

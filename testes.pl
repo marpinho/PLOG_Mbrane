@@ -99,7 +99,5 @@ teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board,
 teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
 start :- 
-    b_teste4(Board),
-    init_reg(Regions),
-	init_player(Player),
-	display_game(Board,Regions,Player).
+    get_new_play(Player, Col, Row, Num).
+
