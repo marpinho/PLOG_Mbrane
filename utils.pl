@@ -31,13 +31,3 @@ map(17, 'Y7').
 map(18, 'Y8').
 map(19, 'Y9').
 
-
-region_neighbours(0, [2, 4, 3]).
-region_neighbours(1, [2, 5, 4, 3, 0]).
-region_neighbours(2, [5, 4, 1]).
-region_neighbours(3, [0, 1, 4, 7, 6]).
-region_neighbours(4, [0, 1, 2, 5, 8, 7, 3]).
-region_neighbours(5, [8, 7, 4, 1, 2]).
-region_neighbours(6, [3, 4, 7]).
-region_neighbours(7, [6, 3, 4, 5, 8]).
-region_neighbours(8, [7, 4, 5]).

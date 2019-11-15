@@ -69,7 +69,7 @@ b_teste6([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
 ]).
 
-init_reg([0,0,0,0,0,0,0,0,0]).
+init_reg3([0,0,0,0,0,0,0,0,0]).
 init_reg2([-13,8,0,8,8,0,0,0,0]).
 
 
@@ -83,7 +83,7 @@ teste4 :- init_board(B3), verify_board(B3).
 
 %get_region([H|T], Imin, Imax, Jmin, Jmax, Cnt, ListTmp, NewRegion)
 % teste5(L) :- b_teste3(B3), get_region(B3, 3, 6, 3, 6, 0, [], L).
-teste5 :- b_teste(Board), verify_regions(Board, Board, 0, 0).
+teste5 :- b_teste4(Board), verify_regions(Board, Board, 0, 0).
 
 teste6(NewB) :- b_teste4(Board), convert_board(Board, [], NewB).
 
@@ -98,8 +98,13 @@ teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board,
 
 teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
+teste12(L) :- update_region_point([0,0,0,0,0,0,0,0,0], 22, 1, L).
+
 start :- 
     b_teste4(Board),
+
     init_reg(Regions),
+	
 	init_player(Player),
+	
 	display_game(Board,Regions,Player).
