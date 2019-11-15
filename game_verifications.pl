@@ -20,6 +20,7 @@ init_board([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
 ]).
 
+
 init_player(1).
 
 
@@ -27,13 +28,10 @@ init_player(1).
 
 game_1(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
-    write(Col), nl,
-    write(Row), nl,
-    write(Num), nl, 
+    replace_value_matrix(Board, Col, Row, Num, NewBoard),
     change_player(Player, Next),
-    write(Next), nl, 
-    display_game(Board, Regions, Next),
-    game_1(Board, Regions, Next).
+    display_game(NewBoard, Regions, Next),
+    game_1(NewBoard, Regions, Next).
 
 
 get_new_play(Player, IntCol, IntRow, IntNum):-
@@ -54,20 +52,6 @@ get_internal_rep(Player, Num, Inum):-
     Player == 1,
     Inum = Num.
 
-add_play(Board, Col, Row , Num, NewBoard):-
-    replace_value_matrix( Board, Col, Row, Num, [], NewBoard, 0);
-    
-replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
-    Counter < Row,
-    C is Counter + 1,
-    concat(TmpList, [H], Tmp),
-    replace_value_matrix(T, Col, Row, Num, Tmp, NewBoard, C).
-
-replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
-    Counter == Row,
-    replace_value_list(H, Col, Num, NewRow),
-    concat(TmpList, [NewRow|T], NewBoard).
-
 change_player(Player, Next):-
     Player == 1,
     Next is 2.
@@ -76,7 +60,7 @@ change_player(Player, Next):-
     Next is 1.
 
 
-% Representação das Regiões por uma lista (Regions) tamanho 9. --------------
+% Representação das Regiões por uma lista (Regions) tamanho 9. -----------------
 
 regions_points(Board, Regions, NewRegions_P) :-
     power_points(Regions, Board, 0, 0, [], Regions_tmp),

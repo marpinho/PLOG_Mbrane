@@ -1,6 +1,7 @@
 concat([], L, L).
 concat([X|L1], L2, [X|L3]) :- concat(L1, L2, L3).
 
+%---------------------------------------------------------------------
 replace_value_list([_H|T], Pos, Pos, Val, TmpList, L) :-
     concat(TmpList, [Val|T], L).
 
@@ -13,6 +14,23 @@ replace_value_list([H|T], Pos_Ini, Pos, Val, TmpList, L) :-
     concat(TmpList, [H], Tmp),
     replace_value_list(T, I, Pos, Val, Tmp, L).
 
+%-------------------------------------------------------------------
+replace_value_matrix([H|T], Col, Row, Num, NewBoard) :-
+    replace_value_matrix(Board, Col, Row, Num, [], NewBoard, 0).
+
+replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter < Row,
+    C is Counter + 1,
+	concat(TmpList, [H], Tmp),
+    replace_value_matrix(T, Col, Row, Num, Tmp, NewBoard, C).
+
+replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter == Row,
+    replace_value_list(H, Col, Num, NewRow),
+	concat(TmpList, [NewRow], Tmp1),
+	concat(Tmp1, T, NewBoard). 
+    
+%----------------------------------------------------------------------
 map(-1, '  ').
 map(0, 'X0').
 map(1, 'X1').

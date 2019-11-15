@@ -32,8 +32,6 @@ display_regions_points(Regions) :-
 	nl,
 	format('     R1: ~d | R2: ~d | R3: ~d | R4: ~d | R5: ~d | R6: ~d | R7: ~d | R8: ~d | R9: ~d ', Regions), nl,nl.
 	
-display_board(Board):-
-	print_rows(Board, 1), nl.
 
 display_player(Player):-
 	Player == 1,
@@ -43,21 +41,24 @@ display_player(Player):-
 	Player == 2,
 	write('     Player: Y '), nl, nl, nl.
 
+display_board(Board):-
+	print_rows(Board, 1), nl.
+
 print_rows([], _).
 
 print_rows([H|T], X) :-
 	X =\= 4, X =\= 7,
-	print_line([H|T], X),
+	print_line(H, X),
 	N is X+1,
 	print_rows(T, N).
 
 print_rows([H|T], X) :-
 	nl,
-	print_line([H|T], X),
+	print_line(H, X),
 	N is X+1,
 	print_rows(T, N).
 	
-print_line([H|T], X) :-
+print_line(H, X) :-
 	printHorizontalSeparator, nl,
 	printRowId(X),
 	format(' | ~w | ~w | ~w || ~w | ~w | ~w || ~w | ~w | ~w |', H), nl.

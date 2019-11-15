@@ -69,7 +69,6 @@ b_teste6([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
 ]).
 
-init_reg([0,0,0,0,0,0,0,0,0]).
 init_reg2([-13,8,0,8,8,0,0,0,0]).
 
 
@@ -99,5 +98,22 @@ teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board,
 teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
 start :- 
-    get_new_play(Player, Col, Row, Num).
+    init_board(B),
+	format(' | ~w | ~w | ~w || ~w | ~w | ~w || ~w | ~w | ~w |', B), nl,
+	rep(B, 2, 2 , 5,[], NewBoard,0),
+	display_board(NewBoard).
 
+
+rep([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter < Row,
+    C is Counter + 1,
+	concat(TmpList, [H], Tmp),
+	display_board(Tmp),
+    rep(T, Col, Row, Num, Tmp, NewBoard, C).
+
+rep([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
+    Counter == Row,
+    replace_value_list(H, Col, Num, NewRow),
+	format('  ~w  ~w  ~w || ~w  ~w  ~w || ~w  ~w  ~w ', NewRow), nl,
+	concat(TmpList, [NewRow], Tmp1),
+	concat(Tmp1, T, NewBoard). 
