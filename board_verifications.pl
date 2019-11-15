@@ -110,7 +110,7 @@ get_number([_H|T], Inc, I, J, NewNum) :-
 
 get_number_row([H|_T], I, I, H).
 get_number_row([_H|T], I2, I, NewNum) :-
-    X1 is I2 + 1,
+    X1 is I2 + 1, !,
     get_number_row(T, X1, I, NewNum).
 
 

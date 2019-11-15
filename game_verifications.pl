@@ -33,7 +33,6 @@ game_1(Board, Regions, Player):-
     display_game(NewBoard, Regions, Next),
     game_1(NewBoard, Regions, Next).
 
-
 get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
     read(Col),
@@ -60,7 +59,7 @@ change_player(Player, Next):-
     Next is 1.
 
 
-% Representação das Regiões por uma lista (Regions) tamanho 9. -----------------
+% Representação das Regiões por uma lista (Regions) tamanho 9. --------------
 
 regions_points(Board, Regions, NewRegions_P) :-
     power_points(Regions, Board, 0, 0, [], Regions_tmp),

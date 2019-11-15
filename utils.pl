@@ -15,7 +15,7 @@ replace_value_list([H|T], Pos_Ini, Pos, Val, TmpList, L) :-
     replace_value_list(T, I, Pos, Val, Tmp, L).
 
 %-------------------------------------------------------------------
-replace_value_matrix([H|T], Col, Row, Num, NewBoard) :-
+replace_value_matrix(Board, Col, Row, Num, NewBoard) :-
     replace_value_matrix(Board, Col, Row, Num, [], NewBoard, 0).
 
 replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
@@ -29,7 +29,7 @@ replace_value_matrix([H|T], Col, Row, Num, TmpList, NewBoard, Counter) :-
     replace_value_list(H, Col, Num, NewRow),
 	concat(TmpList, [NewRow], Tmp1),
 	concat(Tmp1, T, NewBoard). 
-    
+
 %----------------------------------------------------------------------
 map(-1, '  ').
 map(0, 'X0').
