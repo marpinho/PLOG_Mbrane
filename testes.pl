@@ -98,6 +98,14 @@ teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board,
 
 teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
-teste12(L) :- update_region_point([0,0,0,0,0,0,0,0,0], 22, 1, L).
+teste12(L) :- update_region_point([0,0,0,0,0,0,0,0,0], 22, 5, L).
 
+teste13 :- 
+    init_board(Board),
+    init_reg(Regions), replace_value_matrix(Board, 5, 2, 5, NewBoard),
+    display_game(NewBoard, Regions, 1).
 
+teste14 :- 
+    init_board(Board),
+    init_reg(Regions), board_update([10, 11, 10, 12, 1, 12, 13, 1, 3], 6, 6, 6, 9, Board, NewBoard),
+    display_game(NewBoard, Regions, 1).

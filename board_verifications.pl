@@ -46,7 +46,6 @@ verify_regions([_|T], Board, I, J) :-
     Imax is Imin + 3,
     Jmax is Jmin + 3,
     get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion),
-    % format(' ~d ~d ~d ~d ~d ~d ~d ~d ~d ', NewRegion), nl,
     verify_row(NewRegion),
     J1 is J + 1,
     verify_regions(T, Board, I, J1).

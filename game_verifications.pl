@@ -61,11 +61,119 @@ change_player(Player, Next):-
 
 % Representação das Regiões por uma lista (Regions) tamanho 9. --------------
 
+resolution(Board, RegionsPoints, NewBoard, NewRegionsPoints) :-
+    calculate_resolution(RegionsPoints, Board, RegionsPoints, NewBoard, NewRegionsPoints).
+
+
+
+calculate_resolution([H|T], Board, RegionsPoints, NewBoard, NewRegionsPoints) :-
+    all_positive([H|T], [], L_positive),
+    find_id_max(L_positive, 0, -1, Max, Id_r),
+    get_number_row([H|T], 0, Id, R_Point),
+    map_region_id(Id_r, Imin, Imax, Jmin, Jmax),
+    get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion).
+
+
+
+t1([H|T], RegionsPoints, B_tmp, Board, New_Board) :-
+    all_positive(RegionsPoints, [], L_positive),
+    find_id_max(L_positive, 0, -1, Max, Id_r),
+    get_number_row(RegionsPoints, 0, Id, R_Point),
+
+    map_region_id(Id_r, Imin, Imax, Jmin, Jmax),
+    get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion),
+    dominant_player(NewRegion, R_Point, 0, Region_update),
+
+    board_update(Region_update, Imin, Jmin, Jmin, Jmax, Board, NewB),
+    regions_points(NewB, Regions_points, R_up).
+
+
+
+dominant_player(New_Reg, 0, _, New_Reg).
+dominant_player(New_Reg, _R_Point, 9, New_Reg).
+dominant_player(Region, R_Point, Id, New_Reg) :-
+    R_Point > 0,
+    get_values_ply1(H, V),
+    replace_value_list(Region, 0, Id, V, [], Reg_Upd),
+    Id1 is Id + 1,
+    dominant_player(Reg_Upd, R_Point, Id1, New_Reg).
+
+dominant_player(Region, R_Point, Id, New_Reg) :-
+    R_Point < 0,
+    get_values_ply2(H, V),
+    replace_value_list(Region, 0, Id, V, [], Reg_Upd),
+    Id1 is Id + 1,
+    dominant_player(Reg_Upd, R_Point, Id1, New_Reg).
+
+
+
+board_update([], _Imin, _Min, _Jmin, _Jmax, NewBoard, NewBoard).
+board_update(L, Imin, Min, Jmin, Jmax, Tmp, NewBoard) :-
+    Jmin == Jmax,
+    I1 is Imin + 1,
+    J1 is Min,
+    board_update(L, I1, Min, J1, Jmax, Tmp, NewBoard).
+
+board_update([H|T], Imin, Min, Jmin, Jmax, Board, NewBoard) :-
+    Jmin < Jmax,
+    replace_value_matrix(Board, Jmin, Imin, H, N_B),
+    J1 is Jmin + 1,
+    board_update(T, Imin, Min, J1, Jmax, N_B, NewBoard).
+
+
+
+get_values_ply1(Value, NewValue) :-
+    Value > 9,
+    V1 is Value - 10,
+    NewValue is V1.
+get_values_ply1(Value, NewValue) :-
+    Value =< 9,
+    NewValue is Value.
+
+
+get_values_ply2(Value, NewValue) :-
+    Value > 9,
+    NewValue is Value.
+get_values_ply2(Value, NewValue) :-
+    Value =< 9,
+    V1 is Value + 10,
+    NewValue is V1.
+
+
+
+
+all_positive([], L, L).
+all_positive([H|T], L_tmp, L) :-
+    H >= 0,
+    concat(L_tmp, [H], L1),
+    all_positive(T, L1, L).
+all_positive([H|T], L_tmp, L) :-
+    H < 0,
+    H1 is -H,
+    concat(L_tmp, [H1], L1),
+    all_positive(T, L1, L).
+
+
+
+find_id_max([], Max, Id, Max, Id).
+find_id_max([H|T], Max_tmp, Id_tmp, Max, Id) :-
+    H =< Max_tmp,
+    find_id_max(T, Max_tmp, Id_tmp, Max, Id).
+
+find_id_max([H|T], Max_tmp, Id_tmp, Max, Id) :-
+    H > Max_tmp,
+    Max1 is H,
+    Id1 is Id_tmp + 1,
+    find_id_max(T, Max1, Id1, Max, Id).
+
+
+
+% Calcula os Pontos das Regiões
 regions_points(Board, Regions, NewRegions_P) :-
     power_points(Regions, Board, 0, 0, [], Regions_tmp),
     influence_points(Regions, Board, 0, 0, Regions_tmp, NewRegions_P).
 
-
+% Calcula os Power Points das Regiões
 power_points([], _Board, _I, _J, Regions_p, Regions_p).
 power_points(List, Board, I, J, TmpList, Regions_p) :-
     J == 3,
@@ -99,6 +207,7 @@ sum_region([H|T], Sum, Regions_p) :-
 
 
 
+% Calcula os Influence Points das Regiões
 % influence_points(+Lista, +Board, +I, +J, +Old_Region_P, -N_Regions_p)
 
 influence_points([], _Board, _I, _J, NRegions_p, NRegions_p).
