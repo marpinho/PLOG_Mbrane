@@ -71,6 +71,8 @@ b_teste6([
 
 init_reg3([0,0,0,0,0,0,0,0,0]).
 init_reg2([-13,8,0,8,8,0,0,0,0]).
+init_reg4([2,0,-3,0,0,0,0,0,0]).
+init_reg5([120,120,0,0,0,0,0,0,120]).
 
 
 teste :- b_teste(B), verify_horizontally(B).
@@ -89,7 +91,7 @@ teste6(NewB) :- b_teste4(Board), convert_board(Board, [], NewB).
 
 teste7(L) :- conv([10,11,12,13,14], L).
 
-teste8(L) :- b_teste4(Board), init_reg(Reg), region_points(Reg, Board, New_reg).
+teste8(L) :- b_teste4(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 t(T) :- T is -3/2.
 
 teste9(L) :- replace_value_list([1,2,3,4,5,6], 0, 3, 12, [], L).
@@ -98,7 +100,10 @@ teste10(New_reg) :- b_teste6(Board), init_reg(Reg), influence_points(Reg, Board,
 
 teste11(New_reg) :- b_teste6(Board), init_reg(Reg), regions_points(Board, Reg, New_reg).
 
-teste12(L) :- update_region_point([0,0,0,0,0,0,0,0,0], 22, 5, L).
+teste12(L_positive, Max, Id_r) :- 
+    init_reg5(Regions), 
+	all_positive(Regions, [], L_positive),
+    find_id_max(L_positive, 0, -1, Max, 0, Id_r).
 
 teste13 :- 
     init_board(Board),
@@ -107,5 +112,20 @@ teste13 :-
 
 teste14 :- 
     init_board(Board),
-    init_reg(Regions), board_update([10, 11, 10, 12, 1, 12, 13, 1, 3], 6, 6, 6, 9, Board, NewBoard),
+    init_reg(Regions), 
+	board_update([-1,-1,-1,14,17,-1,-1,-1,-1], 6, 6, 6, 9, Board, NewBoard),
     display_game(NewBoard, Regions, 1).
+
+teste15(B, R) :- 
+	b_teste6(Board),
+    init_reg4(Regions), 
+	% regions_points(Board, Regions, New_reg),
+	resolution(Board, Regions, B, R),
+    format(' ~d ~d ~d ~d ~d ~d ~d ~d ~d ', R), nl,
+    display_game(B, R, 1).
+
+teste16(Region_update) :-
+	dominant_player([-1, -1, -1, 4, 17, -1, -1, -1, -1 ], -3, 0, [-1, -1, -1, 4, 17, -1, -1, -1, -1 ], Region_update).
+
+
+teste17(L) :- regions_seen([3,4,1,0], [0,0,0,0,0,0,0,0,0], L).

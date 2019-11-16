@@ -84,6 +84,7 @@ map_region_id(6, 6, 9, 0, 3).
 map_region_id(7, 6, 9, 3, 6).
 map_region_id(8, 6, 9, 6, 9).
 
+init_reg_clean([-1,-1,-1,-1,-1,-1,-1,-1,-1]).
 
 region_neighbours(0, [2, 4, 3]).
 region_neighbours(1, [2, 5, 4, 3, 0]).

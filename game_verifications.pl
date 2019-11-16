@@ -29,9 +29,11 @@ init_player(1).
 game_1(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
     replace_value_matrix(Board, Col, Row, Num, NewBoard),
+    verify_board(NewBoard),
+    regions_points(NewBoard, Regions, NewRegions),
     change_player(Player, Next),
-    display_game(NewBoard, Regions, Next),
-    game_1(NewBoard, Regions, Next).
+    display_game(NewBoard, NewRegions, Next),
+    game_1(NewBoard, NewRegions, Next).
 
 get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
@@ -45,71 +47,76 @@ get_new_play(Player, IntCol, IntRow, IntNum):-
     get_internal_rep(Player, Num, IntNum).
 
 get_internal_rep(Player, Num, Inum):-
-    Player == 2,
+    Player =:= 2,
     map_y(Num,Inum).
 get_internal_rep(Player, Num, Inum):-
-    Player == 1,
+    Player =:= 1,
     Inum = Num.
 
 change_player(Player, Next):-
-    Player == 1,
+    Player =:= 1,
     Next is 2.
 change_player(Player, Next):-
-    Player == 2,
+    Player =:= 2,
     Next is 1.
 
 
 % Representação das Regiões por uma lista (Regions) tamanho 9. --------------
 
 resolution(Board, RegionsPoints, NewBoard, NewRegionsPoints) :-
-    calculate_resolution(RegionsPoints, Board, RegionsPoints, NewBoard, NewRegionsPoints).
+    init_reg(Reg_clean),
+    calculate_resolution(RegionsPoints, RegionsPoints, Reg_clean, [], Board, NewBoard, NewRegionsPoints).
 
 
 
-calculate_resolution([H|T], Board, RegionsPoints, NewBoard, NewRegionsPoints) :-
-    all_positive([H|T], [], L_positive),
-    find_id_max(L_positive, 0, -1, Max, Id_r),
-    get_number_row([H|T], 0, Id, R_Point),
-    map_region_id(Id_r, Imin, Imax, Jmin, Jmax),
-    get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion).
-
-
-
-t1([H|T], RegionsPoints, B_tmp, Board, New_Board) :-
+calculate_resolution([], _RP, RC, IdL, B, B, RC).
+calculate_resolution([H|T], RegionsPoints, Reg_clean, Id_list, Board, New_Board, New_Reg) :-
     all_positive(RegionsPoints, [], L_positive),
-    find_id_max(L_positive, 0, -1, Max, Id_r),
-    get_number_row(RegionsPoints, 0, Id, R_Point),
+    find_id_max(L_positive, -1, -1, _Max, 0, Id_r),
+    get_number_row(RegionsPoints, 0, Id_r, R_Point),
 
+    
     map_region_id(Id_r, Imin, Imax, Jmin, Jmax),
     get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion),
-    dominant_player(NewRegion, R_Point, 0, Region_update),
-
+    dominant_player(NewRegion, R_Point, 0, NewRegion, Region_update),
     board_update(Region_update, Imin, Jmin, Jmin, Jmax, Board, NewB),
-    regions_points(NewB, Regions_points, R_up).
+    regions_points(NewB, RegionsPoints, R_up),
+
+    concat(Id_list, [Id_r], Id_list_Upd),
+
+    replace_value_list(Reg_clean, 0, Id_r, R_Point, [], Reg_Clean_Upd),
+    regions_seen(Id_list_Upd, R_up, R_Up_2),
+
+    calculate_resolution(T, R_Up_2, Reg_Clean_Upd, Id_list_Upd, NewB, New_Board, New_Reg).
 
 
+regions_seen([], New_R, New_R).
+regions_seen([H|T], Region, New_R) :-
+    replace_value_list(Region, 0, H, 120, [], R_Up),
+    regions_seen(T, R_Up, New_R).
 
-dominant_player(New_Reg, 0, _, New_Reg).
-dominant_player(New_Reg, _R_Point, 9, New_Reg).
-dominant_player(Region, R_Point, Id, New_Reg) :-
-    R_Point > 0,
-    get_values_ply1(H, V),
-    replace_value_list(Region, 0, Id, V, [], Reg_Upd),
+dominant_player(_, 0, _,New_Reg ,New_Reg).
+dominant_player([], _R_Point, _Id, Old_Reg, Old_Reg).
+
+dominant_player([H|T], R_Point, Id, Old_Reg, New_Reg) :-
+    R_Point > 0, !,
+    get_values_ply1(H, V), !,
+    replace_value_list(Old_Reg, 0, Id, V, [], Reg_Upd),
     Id1 is Id + 1,
-    dominant_player(Reg_Upd, R_Point, Id1, New_Reg).
+    dominant_player(T, R_Point, Id1, Reg_Upd, New_Reg).
 
-dominant_player(Region, R_Point, Id, New_Reg) :-
-    R_Point < 0,
-    get_values_ply2(H, V),
-    replace_value_list(Region, 0, Id, V, [], Reg_Upd),
+dominant_player([H|T], R_Point, Id, Old_Reg, New_Reg) :-
+    R_Point < 0, !,
+    get_values_ply2(H, V), !,
+    replace_value_list(Old_Reg, 0, Id, V, [], Reg_Upd),
     Id1 is Id + 1,
-    dominant_player(Reg_Upd, R_Point, Id1, New_Reg).
+    dominant_player(T, R_Point, Id1, Reg_Upd, New_Reg).
 
 
 
 board_update([], _Imin, _Min, _Jmin, _Jmax, NewBoard, NewBoard).
 board_update(L, Imin, Min, Jmin, Jmax, Tmp, NewBoard) :-
-    Jmin == Jmax,
+    Jmin =:= Jmax,
     I1 is Imin + 1,
     J1 is Min,
     board_update(L, I1, Min, J1, Jmax, Tmp, NewBoard).
@@ -121,7 +128,7 @@ board_update([H|T], Imin, Min, Jmin, Jmax, Board, NewBoard) :-
     board_update(T, Imin, Min, J1, Jmax, N_B, NewBoard).
 
 
-
+get_values_ply1(-1, -1).
 get_values_ply1(Value, NewValue) :-
     Value > 9,
     V1 is Value - 10,
@@ -130,7 +137,7 @@ get_values_ply1(Value, NewValue) :-
     Value =< 9,
     NewValue is Value.
 
-
+get_values_ply2(-1, -1).
 get_values_ply2(Value, NewValue) :-
     Value > 9,
     NewValue is Value.
@@ -155,16 +162,24 @@ all_positive([H|T], L_tmp, L) :-
 
 
 
-find_id_max([], Max, Id, Max, Id).
-find_id_max([H|T], Max_tmp, Id_tmp, Max, Id) :-
-    H =< Max_tmp,
-    find_id_max(T, Max_tmp, Id_tmp, Max, Id).
+find_id_max([], Max, _Id, Max, Id, Id).
+find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id):-
+    H =:= 120,
+    Id1 is Id_tmp + 1,
+    find_id_max(T, Max_tmp, Id1, Max, Id_max, Id).
 
-find_id_max([H|T], Max_tmp, Id_tmp, Max, Id) :-
+find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id) :-
+    H =\= 120,
+    H =< Max_tmp,
+    Id1 is Id_tmp + 1,
+    find_id_max(T, Max_tmp, Id1, Max, Id_max, Id).
+
+find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id) :-
+    H =\= 120,
     H > Max_tmp,
     Max1 is H,
     Id1 is Id_tmp + 1,
-    find_id_max(T, Max1, Id1, Max, Id).
+    find_id_max(T, Max1, Id1, Max, Id1, Id).
 
 
 
@@ -176,7 +191,7 @@ regions_points(Board, Regions, NewRegions_P) :-
 % Calcula os Power Points das Regiões
 power_points([], _Board, _I, _J, Regions_p, Regions_p).
 power_points(List, Board, I, J, TmpList, Regions_p) :-
-    J == 3,
+    J =:= 3,
     I1 is I + 1,
     J1 is 0,
     power_points(List, Board, I1, J1, TmpList, Regions_p).
@@ -193,7 +208,7 @@ power_points([_|T], Board, I, J, TmpList, Regions_p) :-
 
 sum_region([], Regions_p, Regions_p).
 sum_region([H|T], Sum, Regions_p) :-
-    H == -1,
+    H =:= -1,
     sum_region(T, Sum, Regions_p).
 sum_region([H|T], Sum, Regions_p) :-
     H > 9,
@@ -212,7 +227,7 @@ sum_region([H|T], Sum, Regions_p) :-
 
 influence_points([], _Board, _I, _J, NRegions_p, NRegions_p).
 influence_points(List, Board, I, J, Old_Region_P, N_Regions_p) :-
-    J == 3,
+    J =:= 3,
     I1 is I + 1,
     J1 is 0,
     influence_points(List, Board, I1, J1, Old_Region_P, N_Regions_p).
@@ -241,7 +256,7 @@ influence_points([_|T], Board, I, J, Old_Region_P, N_Regions_p) :-
 % calculate_influence(_Region, 8, R, R).
 calculate_influence(_Region, 9, R, R).
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 0, !,
+    Region_Id =:= 0, !,
     get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
     update_region_point(Regions_points, Sum_Numbers_R, 1, Regions_Update), % Altera a Pontuação da Região à sua direita 
     
@@ -252,7 +267,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 2 sobre as suas regiões vizinhas    
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 1, !,
+    Region_Id =:= 1, !,
     get_numbers_right(Region, Sum_Numbers_R), % Vai buscar a soma dos valores que fazem fronteira na direita
     update_region_point(Regions_points, Sum_Numbers_R, 2, Regions_Update), % Altera a Pontuação da Região à sua direita 
      
@@ -271,7 +286,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 3 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 2, !,
+    Region_Id =:= 2, !,
     get_numbers_down(Region, Sum_Numbers_D), % Vai buscar a soma dos valores que fazem fronteira abaixo
     update_region_point(Regions_points, Sum_Numbers_D, 5, Regions_Update), % Altera a Pontuação da Região abaixo
     
@@ -282,7 +297,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 4 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 3, !,
+    Region_Id =:= 3, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 0, Regions_Update), % Altera a Pontuação da Região acima
    
@@ -299,7 +314,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 5 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 4, !,
+    Region_Id =:= 4, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 1, Regions_Update), % Altera a Pontuação da Região acima
    
@@ -323,7 +338,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 6 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 5, !,
+    Region_Id =:= 5, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 2, Regions_Update_II), % Altera a Pontuação da Região acima
    
@@ -339,7 +354,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 7 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 6, !,
+    Region_Id =:= 6, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 3, Regions_Update), % Altera a Pontuação da Região acima
    
@@ -352,7 +367,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 8 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 7, !,
+    Region_Id =:= 7, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 4, Regions_Update), % Altera a Pontuação da Região acima
    
@@ -369,7 +384,7 @@ calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
 
 % Calcula a Influencia da região 9 sobre as suas regiões vizinhas
 calculate_influence(Region, Region_Id, Regions_points, NewRegions_points) :-
-    Region_Id == 8, !,
+    Region_Id =:= 8, !,
     get_numbers_up(Region, Sum_Numbers_U), % Vai buscar a soma dos valores que fazem fronteira acima
     update_region_point(Regions_points, Sum_Numbers_U, 5, Regions_Update), % Altera a Pontuação da Região acima
    
