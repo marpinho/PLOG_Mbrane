@@ -65,16 +65,14 @@ change_player(Player, Next):-
 
 resolution(Board, RegionsPoints, NewBoard, NewRegionsPoints) :-
     init_reg(Reg_clean),
-    calculate_resolution(RegionsPoints, RegionsPoints, Reg_clean, [], Board, NewBoard, NewRegionsPoints).
+    calculate_resolution(0, RegionsPoints, Reg_clean, [], Board, NewBoard, NewRegionsPoints).
 
 
-
-calculate_resolution([], _RP, RC, IdL, B, B, RC).
-calculate_resolution([H|T], RegionsPoints, Reg_clean, Id_list, Board, New_Board, New_Reg) :-
+calculate_resolution(9, _RP, RC, IdL, B, B, RC).
+calculate_resolution(Cnt, RegionsPoints, Reg_clean, Id_list, Board, New_Board, New_Reg) :-
     all_positive(RegionsPoints, [], L_positive),
-    find_id_max(L_positive, -1, -1, _Max, 0, Id_r),
+    find_id_max(L_positive, 0, -1, _Max, 0, Id_r),
     get_number_row(RegionsPoints, 0, Id_r, R_Point),
-
     
     map_region_id(Id_r, Imin, Imax, Jmin, Jmax),
     get_region(Board, Imin, Imax, Jmin, Jmax, 0, [], NewRegion),
@@ -87,7 +85,9 @@ calculate_resolution([H|T], RegionsPoints, Reg_clean, Id_list, Board, New_Board,
     replace_value_list(Reg_clean, 0, Id_r, R_Point, [], Reg_Clean_Upd),
     regions_seen(Id_list_Upd, R_up, R_Up_2),
 
-    calculate_resolution(T, R_Up_2, Reg_Clean_Upd, Id_list_Upd, NewB, New_Board, New_Reg).
+    Cnt1 is Cnt + 1,
+
+    calculate_resolution(Cnt1, R_Up_2, Reg_Clean_Upd, Id_list_Upd, NewB, New_Board, New_Reg).
 
 
 regions_seen([], New_R, New_R).
@@ -170,13 +170,13 @@ find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id):-
 
 find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id) :-
     H =\= 120,
-    H =< Max_tmp,
+    H < Max_tmp,
     Id1 is Id_tmp + 1,
     find_id_max(T, Max_tmp, Id1, Max, Id_max, Id).
 
 find_id_max([H|T], Max_tmp, Id_tmp, Max, Id_max, Id) :-
     H =\= 120,
-    H > Max_tmp,
+    H >= Max_tmp,
     Max1 is H,
     Id1 is Id_tmp + 1,
     find_id_max(T, Max1, Id1, Max, Id1, Id).
