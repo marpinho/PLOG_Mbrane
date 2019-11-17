@@ -5,6 +5,9 @@ concat([X|L1], L2, [X|L3]) :- concat(L1, L2, L3).
 replace_value_list([_H|T], Pos, Pos, Val, TmpList, L) :-
     concat(TmpList, [Val|T], L).
 
+replace_value_list([H|T], Pos, Val, L):-
+    replace_value_list([H|T], 0, Pos, Val, [], L).
+
 replace_value_list([H|T], Pos_Ini, Pos, Val, TmpList, L) :-
     Pos_Ini < Pos,
     I is Pos_Ini + 1,

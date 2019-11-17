@@ -25,11 +25,9 @@ init_player(1).
 
 
 % player vs player --------------------------------------------------------
-
 game_1(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
     replace_value_matrix(Board, Col, Row, Num, NewBoard),
-    verify_board(NewBoard),
     regions_points(NewBoard, Regions, NewRegions),
     change_player(Player, Next),
     display_game(NewBoard, NewRegions, Next),
