@@ -8,8 +8,6 @@
 
 init_reg([0,0,0,0,0,0,0,0,0]).
 
-init_reg([0,0,2,0,-5,-7,0,0,0]).
-
 init_board([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -23,6 +21,11 @@ init_board([
 ]).
 
 init_player(1).
+
+init_game(Board,Regions,Player):-
+    init_board(Board),
+    init_reg(Regions),
+	init_player(Player).
 
 
 % player vs player --------------------------------------------------------
@@ -100,7 +103,7 @@ get_new_play(Player, IntCol, IntRow, IntNum):-
     get_internal_rep(Player, Num, IntNum).
 
 ask_res(Ans):-
-    write('press n to not start resolution phase: '), nl,
+    write('press n to NOT start resolution : '), nl,
     read(Ans).
 
 
@@ -203,8 +206,6 @@ get_values_ply2(Value, NewValue) :-
     Value =< 9,
     V1 is Value + 10,
     NewValue is V1.
-
-
 
 
 all_positive([], L, L).

@@ -3,9 +3,7 @@
 :- [utils].
 :- [print_board].
 
-
-
-%-------------------------------------------ALTERNATIVA------------------------------------
+%-------------------------------------------------------------------------------
 verify_board(Board, Col, Row, Num, Valid) :- 
     Num > 10,
     N is Num - 10,
@@ -109,8 +107,7 @@ verify_vert(Board, Col, Num, Valid) :-
     get_col(Board, Col, [], NewCol),
     check_row(NewCol, Num, Valid).
 
-%----------------------------------------------------------------------------------
-%---------------------------------------------------------------------------
+%----------------------------------------------------------------------------------        
 %------------------------------------------------------------------------------
 
 convert_board([], ConvBoard,ConvBoard).
@@ -178,12 +175,12 @@ get_row(List, Jmin, Jmax, ListTmp, NewList) :-
 % Tabuleiro - Representa o tabuleiro de jogo.
 % Incremento - É uma variável que aumenta de forma a "varrer" as colunas todas do tabuleiro.
 % Verifica se existe algum número em duplicado nas colunas do tabuleiro 
-verify_vertically([], _List, _I).
-verify_vertically([_|T], Board, I) :-
-    get_col(Board, I, [], Col),
-    verify_row(Col),
-    I1 is I + 1,
-    verify_vertically(T, Board, I1).
+% verify_vertically([], _List, _I).
+% verify_vertically([_|T], Board, I) :-
+ %   get_col(Board, I, [], Col),
+%    verify_row(Col),
+%    I1 is I + 1,
+%    verify_vertically(T, Board, I1).
 
 % get_col(+Tabuleiro, +I, +ListaTmp, -NovaLista)
 % Tabuleiro - Tabuleiro no qual o predicado vai efetuar a pesquisa dos números 
@@ -212,17 +209,16 @@ get_number_row([_H|T], I2, I, NewNum) :-
 
 
 % Verifica se existe algum número em duplicado nas linhas do tabuleiro 
-verify_horizontally([]).
-verify_horizontally([H|T]) :- 
-    verify_row(H),
-    verify_horizontally(T).
+% verify_horizontally([]).
+% verify_horizontally([H|T]) :- 
+ %   verify_row(H),
+  %  verify_horizontally(T).
 
 
 verify_row([]).
 verify_row([H|T]) :- 
     verify_numbers(T, H),
     verify_row(T).
-
 
 verify_numbers([], _X).
 verify_numbers([H|T], X) :-

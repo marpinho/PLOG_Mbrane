@@ -117,7 +117,7 @@ display_end_game(Board, Regions, Winner, X, Y):-
 
 
 display_choices :-
-	nl,write('Chose your game mode: '),nl,nl,
+	nl,write('Chose the game mode: '),nl,nl,
 	write('1. Player versus player'),nl,
 	write('2. Player versus computer'),nl,
 	write('3. Computer versus computer'),nl,
@@ -126,7 +126,7 @@ display_choices :-
 
 % messages ----------------------------------------------------------------
 not_implemented :-
-    nl, write('--This mode is not yet available--'),
+    nl, write('--This mode is not available--'),
 	abort.
 
 valid_move :-
