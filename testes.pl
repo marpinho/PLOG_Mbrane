@@ -2,6 +2,7 @@
 :- [print_board].
 :- [board_verifications].
 :- [game_verifications].
+:- [main].
 
 
 b_teste(
@@ -62,7 +63,7 @@ b_teste6([
 	[-1, 8, 16, -1, 1, -1, 4, 17, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
-	[-1, -1, 12, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -71,7 +72,7 @@ b_teste6([
 
 b_teste7([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
-	[-1, 8, 16, -1, 1, -1, 4, 17, -1],
+	[-1, 8, 6, -1, 11, -1, 14, 17, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -83,7 +84,7 @@ b_teste7([
 
 init_reg3([0,0,0,0,0,0,0,0,0]).
 init_reg2([-13,8,0,8,8,0,0,0,0]).
-init_reg4([2,0,-3,0,0,0,0,0,0]).
+init_reg4([2, 0,-3,0,0,0,0,0,0]).
 init_reg5([120,120,120,0,0,0,0,0,0]).
 
 
@@ -128,15 +129,15 @@ teste14 :-
 	board_update([-1,-1,-1,14,17,-1,-1,-1,-1], 6, 6, 6, 9, Board, NewBoard),
     display_game(NewBoard, Regions, 1).
 
-teste15(B, R) :- 
+teste15(R) :- 
 	b_teste6(Board),
     init_reg4(Regions), 
 	% regions_points(Board, Regions, New_reg),
     % format(' ~d ~d ~d ~d ~d ~d ~d ~d ~d ', New_reg), nl.
 	resolution(Board, Regions, B, R),
-    % calculate_resolution(0, N, Regions, [0,0,0,0,0,0,0,0,0], [], Board, B, R),
+    % calculate_resolution(3, Regions, [0,0,0,0,0,0,0,0,0], [2,1,0], Board, B, R),
     format(' ~f ~f ~f ~f ~f ~f ~f ~f ~f ', R), nl,
-    display_game(B, R, 1).
+    display_game(B, R, 1, 0,0).
 
 teste16(Region_update) :-
 	dominant_player([-1, -1, -1, 4, 17, -1, -1, -1, -1 ], -3, 0, [-1, -1, -1, 4, 17, -1, -1, -1, -1 ], Region_update).
