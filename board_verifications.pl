@@ -33,8 +33,21 @@ verify_board_2(Board, Col, Row, Num, Valid):-
     ).
 
 verify_board_3(Board, Col, Row, Num, Valid):-
-    verify_vert(Board, Col, Num, Valid).
-           
+    verify_vert(Board, Col, Num, V3),
+    (
+        V3 == 'false' ->
+        Valid = V3;
+        verify_board_4(Board, Col, Row, Num, Valid)
+    ).
+
+verify_board_4(Board, Col, Row, Num, Valid):-
+    replace_value_matrix(Board, Col, Row, Num, NewBoard),
+    convert_board(NewBoard, [], ConvBoard),
+    verify_regions(NewBoard, ConvBoard, 0, 0),!,
+    Valid = 'true'.
+
+verify_board_4(Board, Col, Row, Num, Valid):-
+    Valid = 'false'.
 %------------------------------------------------------------------------
 verify_available(Board, Col, Row, Valid) :-
     verify_available(Board, Col, Row, 0, Valid).
