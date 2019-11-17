@@ -1,6 +1,7 @@
 
 :- [game_verifications].
 
+
 run :-  
     display_choices, nl, 
     write('Your Choice: '), nl,
@@ -14,7 +15,7 @@ start(Choice) :-
     init_reg(Regions),
 	init_player(Player),
     display_game(Board, Regions, Player),
-    game_1(Board, Regions, Player).
+    game_pvp(Board, Regions, Player).
 
 start(Choice):- 
     Choice == 2,

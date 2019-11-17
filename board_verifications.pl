@@ -6,11 +6,15 @@
 %----------------
 
 
-verify_board(Board) :-
+verify_board(Board, Col, Row, Valid) :-
     convert_board(Board, [], ConvBoard),
-    verify_regions(Board, ConvBoard, 0, 0),
-    verify_horizontally(ConvBoard),
+    verify_available(ConvBoard, Col, Row, Valid).
+    % verify_regions(Board, ConvBoard, 0, 0),
+    % verify_horizontally(ConvBoard),
     verify_vertically(Board, ConvBoard, 0).
+
+verify_space(Board, Col, Row, Valid) :-
+    verify_available(Board, Col, Row, Valid).
 
 
 convert_board([], ConvBoard,ConvBoard).
@@ -29,10 +33,39 @@ convert_row([H|T], RowTmp, ConvRow) :-
     concat(RowTmp, [H], NewTmp),
     convert_row(T, NewTmp, ConvRow).
 
+&------------------------------------------------------------------------
+verify_available(Board, Col, Row, Valid) :-
+    verify_available(Board, Col, Row, 0, Valid).
 
+verify_available([H|T], Col, Row, Counter, Valid):-
+    Counter < Row,
+    C is Counter + 1,
+    verify_available(T, Col, Row, C, Valid).
 
+verify_available([H|T], Col, Row, Counter, Valid):-
+    Counter == Row,
+    check_number(H, Col, Num),
+   (
+       Num == -1 ->
+       Valid = 'true';
+       Valid = 'false'
+   ).
 
+check_number([H|T], Col, Num):-
+    check_number([H|T], Col, Num, 0).
 
+check_number([H|T], Col, Num, Counter):-
+    Counter < Col,
+    C is Counter + 1,
+    check_number(T, Col, Num, C).
+
+check_number([H|T], Col, Num, Counter):-
+    Counter == Col,
+    write('check col'),nl,
+    write(Col),nl,
+    Num is H,!.
+
+&-----------------------------------------------------------------------
 % Limite superior vai ser I + 2 | J + 2.
 verify_regions([], _Board, _I, _J).
 verify_regions(List, _Board, I, J) :-
@@ -73,7 +106,7 @@ get_row(List, Jmin, Jmax, ListTmp, NewList) :-
     get_row(List, Cnt, Jmax, Reg, NewList).
     
     
-
+%-------------------------------------------------------------------------------------------------
 
 % verify_vertically(+Tabuleiro1, +Tabuleiro, +Incremento)
 % Tabuleiro1 - Serve como condição de paragem.

@@ -20,18 +20,32 @@ init_board([
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1]
 ]).
 
-
 init_player(1).
 
 
 % player vs player --------------------------------------------------------
-game_1(Board, Regions, Player):-
+
+
+game_pvp(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
-    replace_value_matrix(Board, Col, Row, Num, NewBoard),
-    regions_points(NewBoard, Regions, NewRegions),
-    change_player(Player, Next),
-    display_game(NewBoard, NewRegions, Next),
-    game_1(NewBoard, NewRegions, Next).
+    write('row read '),
+    write(Row),
+    verify_space(Board, Col, Row, Valid),
+    (Valid == 'true' ->
+        (
+            replace_value_matrix(Board, Col, Row, Num, NewBoard),
+            regions_points(NewBoard, Regions, NewRegions),
+            change_player(Player, Next),
+            display_game(NewBoard, NewRegions, Next),
+            game_pvp(NewBoard, NewRegions, Next)
+
+        );
+    
+        (   not_valid_move, 
+            game_pvp(Board, Regions, Player)
+        )
+    ).
+  
 
 get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
@@ -39,7 +53,7 @@ get_new_play(Player, IntCol, IntRow, IntNum):-
     map_col(Col,IntCol),
     write('row: '), nl,
     read(Row),
-    IntRow is Row  - 1,
+    IntRow is Row - 1,
     write('number: '), nl,
     read(Num),    
     get_internal_rep(Player, Num, IntNum).

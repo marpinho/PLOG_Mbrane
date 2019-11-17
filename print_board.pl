@@ -100,3 +100,8 @@ display_choices :-
 not_implemented :-
     nl, write('--This mode is not yet available--'),
 	abort.
+
+valid_move :-
+    write('--valid choice--'), nl.
+not_valid_move :-
+    write('--not a valid choice, try again--'), nl.
