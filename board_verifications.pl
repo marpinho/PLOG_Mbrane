@@ -3,37 +3,33 @@
 :- [utils].
 :- [print_board].
 
-%----------------
 
 
-verify_board(Board, Col, Row, Valid) :-
+
+verify_board(Board, Col, Row, Num, Valid) :- 
+    Num > 10,
+    N is Num - 10,
+    verify_board_1(Board, Col, Row, N, Valid).
+
+verify_board(Board, Col, Row, Num, Valid) :- 
+    Num < 10,
+    verify_board_1(Board, Col, Row, Num, Valid).
+
+verify_board_1(Board, Col, Row, Num, Valid):-
+    verify_available(Board, Col, Row, V1),
+    (
+        V1 == 'false' ->
+        Valid = V1;
+        verify_board_2(Board, Col, Row, Num, Valid)
+    ).
+
+verify_board_2(Board, Col, Row, Num, Valid):-
     convert_board(Board, [], ConvBoard),
-    verify_available(ConvBoard, Col, Row, Valid).
-    % verify_regions(Board, ConvBoard, 0, 0),
-    % verify_horizontally(ConvBoard),
-    verify_vertically(Board, ConvBoard, 0).
-
-verify_space(Board, Col, Row, Valid) :-
-    verify_available(Board, Col, Row, Valid).
+    verify_hori(ConvBoard, Row, Num, Valid).
 
 
-convert_board([], ConvBoard,ConvBoard).
-convert_board([H|T], TmpBoard, ConvBoard) :-
-    convert_row(H, [], ConvRow),
-    concat(TmpBoard, [ConvRow], NewTmp),
-    convert_board(T, NewTmp, ConvBoard).
 
-convert_row([], ConvRow, ConvRow).
-convert_row([H|T], RowTmp, ConvRow) :-
-    H > 9,
-    H1 is H - 10,
-    concat(RowTmp, [H1], NewTmp),
-    convert_row(T, NewTmp, ConvRow).
-convert_row([H|T], RowTmp, ConvRow) :-
-    concat(RowTmp, [H], NewTmp),
-    convert_row(T, NewTmp, ConvRow).
-
-&------------------------------------------------------------------------
+%------------------------------------------------------------------------
 verify_available(Board, Col, Row, Valid) :-
     verify_available(Board, Col, Row, 0, Valid).
 
@@ -61,11 +57,55 @@ check_number([H|T], Col, Num, Counter):-
 
 check_number([H|T], Col, Num, Counter):-
     Counter == Col,
-    write('check col'),nl,
-    write(Col),nl,
     Num is H,!.
 
-&-----------------------------------------------------------------------
+%----------------------------------------------------------------------
+
+verify_hori(Board, Row, Num, Valid) :-
+    verify_hori(Board, Row, Num, 0, Valid).
+
+verify_hori([H|T], Row, Num, Counter, Valid):-
+    Counter < Row,
+    C is Counter + 1,
+    verify_hori(T, Col, Num, C, Valid).
+
+verify_hori([H|T], Row, Num,Counter, Valid):-
+    Counter == Row,
+    check_row(H, Num, Valid).
+   
+check_row([], Num, Valid):-
+    Valid = 'true'.
+
+check_row([H|T], Num, Valid):-
+    H == Num,
+    Valid = 'false'.
+
+check_row([H|T], Num, Valid ):-
+    H =\= Num,
+    check_row(T, Num, Valid).
+
+
+
+%--------------------------------------------------------------------
+
+convert_board([], ConvBoard,ConvBoard).
+convert_board([H|T], TmpBoard, ConvBoard) :-
+    convert_row(H, [], ConvRow),
+    concat(TmpBoard, [ConvRow], NewTmp),
+    convert_board(T, NewTmp, ConvBoard).
+
+convert_row([], ConvRow, ConvRow).
+convert_row([H|T], RowTmp, ConvRow) :-
+    H > 9,
+    H1 is H - 10,
+    concat(RowTmp, [H1], NewTmp),
+    convert_row(T, NewTmp, ConvRow).
+convert_row([H|T], RowTmp, ConvRow) :-
+    concat(RowTmp, [H], NewTmp),
+    convert_row(T, NewTmp, ConvRow).
+
+%------------------------------------------------------------------------
+
 % Limite superior vai ser I + 2 | J + 2.
 verify_regions([], _Board, _I, _J).
 verify_regions(List, _Board, I, J) :-

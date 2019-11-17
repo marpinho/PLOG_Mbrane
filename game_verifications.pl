@@ -28,9 +28,8 @@ init_player(1).
 
 game_pvp(Board, Regions, Player):-
     get_new_play(Player, Col, Row, Num),
-    write('row read '),
-    write(Row),
-    verify_space(Board, Col, Row, Valid),
+    verify_board(Board, Col, Row, Num, Valid),
+    write(Valid),
     (Valid == 'true' ->
         (
             replace_value_matrix(Board, Col, Row, Num, NewBoard),
@@ -38,7 +37,6 @@ game_pvp(Board, Regions, Player):-
             change_player(Player, Next),
             display_game(NewBoard, NewRegions, Next),
             game_pvp(NewBoard, NewRegions, Next)
-
         );
     
         (   not_valid_move, 

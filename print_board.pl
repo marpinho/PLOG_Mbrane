@@ -104,4 +104,4 @@ not_implemented :-
 valid_move :-
     write('--valid choice--'), nl.
 not_valid_move :-
-    write('--not a valid choice, try again--'), nl.
+    write('--not a valid choice, try again--'), nl, nl.
