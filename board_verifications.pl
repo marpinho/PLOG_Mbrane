@@ -25,7 +25,16 @@ verify_board_1(Board, Col, Row, Num, Valid):-
 
 verify_board_2(Board, Col, Row, Num, Valid):-
     convert_board(Board, [], ConvBoard),
-    verify_hori(ConvBoard, Row, Num, Valid).
+    verify_hori(ConvBoard, Row, Num, V2),
+    (
+        V2 == 'false' ->
+        Valid = V2;
+        verify_board_3(ConvBoard, Col, Row, Num, Valid)
+    ).
+
+verify_board_3(Board, Col, Row, Num, Valid):-
+    verify_vert(Board, Col, Num, Valid).
+
 
 
 
@@ -67,7 +76,7 @@ verify_hori(Board, Row, Num, Valid) :-
 verify_hori([H|T], Row, Num, Counter, Valid):-
     Counter < Row,
     C is Counter + 1,
-    verify_hori(T, Col, Num, C, Valid).
+    verify_hori(T, Row, Num, C, Valid).
 
 verify_hori([H|T], Row, Num,Counter, Valid):-
     Counter == Row,
@@ -84,7 +93,11 @@ check_row([H|T], Num, Valid ):-
     H =\= Num,
     check_row(T, Num, Valid).
 
+%--------------------------------------------------------------------
 
+verify_vert(Board, Col, Num, Valid) :-
+    get_col(Board, Col, [], NewCol),
+    check_row(NewCol, Num, Valid).
 
 %--------------------------------------------------------------------
 

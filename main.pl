@@ -3,10 +3,10 @@
 
 
 run :-  
-   % display_choices, nl, 
-    write('Your Choice: '), nl,
-    read(Choice),
-    start(Choice).
+    %display_choices, nl, 
+    %write('Your Choice: '), nl,
+    %read(Choice),
+    start(1).
 
 % game modes ---------------------------------------------
 start(Choice) :- 
