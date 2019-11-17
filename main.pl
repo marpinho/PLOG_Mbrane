@@ -1,6 +1,13 @@
 
 :- [game_verifications].
 
+r :-
+    init_regi(R),
+    display_regions_points(R),
+    get_points(R,X,Y),
+    write(X), 
+    write(Y).
+
 
 run :-  
     %display_choices, nl, 
@@ -14,7 +21,7 @@ start(Choice) :-
     init_board(Board),
     init_reg(Regions),
 	init_player(Player),
-    display_game(Board, Regions, Player),
+    display_game(Board, Regions, Player, 0,0),
     game_pvp(Board, Regions, Player).
 
 start(Choice):- 

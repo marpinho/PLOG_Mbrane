@@ -73,7 +73,6 @@ map_col('f',5).
 map_col('g',6).
 map_col('h',7).
 map_col('i',8).
-map_col(_,-1).
 
 
 % map_region_id(id, Imin, Imax, Jmin, Jmax).

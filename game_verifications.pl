@@ -8,9 +8,11 @@
 
 init_reg([0,0,0,0,0,0,0,0,0]).
 
+init_reg([0,0,2,0,-5,-7,0,0,0]).
+
 init_board([
-	[1, 2, 3, 4, 5, 6, 7, 8, 9],
-	[-1, 6, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
 	[-1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -27,15 +29,17 @@ init_player(1).
 
 
 game_pvp(Board, Regions, Player):-
+    ask_res(Ans),
+    Ans == 'n',!,
     get_new_play(Player, Col, Row, Num),
     verify_board(Board, Col, Row, Num, Valid),
-    write(Valid),
     (Valid == 'true' ->
         (
             replace_value_matrix(Board, Col, Row, Num, NewBoard),
             regions_points(NewBoard, Regions, NewRegions),
             change_player(Player, Next),
-            display_game(NewBoard, NewRegions, Next),
+            get_points(NewRegions, X, Y),
+            display_game(NewBoard, NewRegions, Next, X, Y),
             game_pvp(NewBoard, NewRegions, Next)
         );
     
@@ -43,7 +47,46 @@ game_pvp(Board, Regions, Player):-
             game_pvp(Board, Regions, Player)
         )
     ).
-  
+
+game_pvp(Board, Regions, Player):-
+    %resolution(Board, Regions, NewBoard, NewRegions),
+    get_points(Regions, X, Y),
+    get_winner(X, Y, Winner),
+    display_end_game(Board, Regions, Winner, X, Y),!.
+
+
+get_points([], Xt, Yt, X, Y):-
+    X is Xt,
+    Y is Yt.
+
+get_points([H|T], X, Y):-
+    get_points([H|T], 0, 0 ,X ,Y).
+
+get_points([H|T], Xt, Yt , X, Y):-
+    H > 0,!,
+    Xi is Xt + 1,
+    get_points(T, Xi, Yt , X, Y).
+
+get_points([H|T], Xt, Yt , X, Y):-
+    H < 0,!,
+    Yi is Yt + 1,
+    get_points(T, Xt, Yi, X, Y).
+
+get_points([H|T], Xt, Yt , X, Y):-
+    get_points(T, Xt, Yt, X, Y).
+
+
+get_winner(X, Y, Winner):-
+    X > Y,!,
+    Winner = 1.
+
+get_winner(X, Y, Winner):-
+    X < Y,!,
+    Winner = 2.
+
+get_winner(X, Y, Winner):-
+    X == Y,!,
+    Winner = 3.
 
 get_new_play(Player, IntCol, IntRow, IntNum):-
     write('column: '), nl,
@@ -55,6 +98,11 @@ get_new_play(Player, IntCol, IntRow, IntNum):-
     write('number: '), nl,
     read(Num),    
     get_internal_rep(Player, Num, IntNum).
+
+ask_res(Ans):-
+    write('press n to not start resolution phase: '), nl,
+    read(Ans).
+
 
 get_internal_rep(Player, Num, Inum):-
     Player =:= 2,

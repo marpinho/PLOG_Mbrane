@@ -5,7 +5,7 @@
 
 
 
-
+%-------------------------------------------ALTERNATIVA------------------------------------
 verify_board(Board, Col, Row, Num, Valid) :- 
     Num > 10,
     N is Num - 10,
@@ -34,10 +34,7 @@ verify_board_2(Board, Col, Row, Num, Valid):-
 
 verify_board_3(Board, Col, Row, Num, Valid):-
     verify_vert(Board, Col, Num, Valid).
-
-
-
-
+           
 %------------------------------------------------------------------------
 verify_available(Board, Col, Row, Valid) :-
     verify_available(Board, Col, Row, 0, Valid).
@@ -99,7 +96,9 @@ verify_vert(Board, Col, Num, Valid) :-
     get_col(Board, Col, [], NewCol),
     check_row(NewCol, Num, Valid).
 
-%--------------------------------------------------------------------
+%----------------------------------------------------------------------------------
+%---------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 
 convert_board([], ConvBoard,ConvBoard).
 convert_board([H|T], TmpBoard, ConvBoard) :-

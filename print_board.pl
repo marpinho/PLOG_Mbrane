@@ -31,7 +31,6 @@ printRowId(X):-
 display_regions_points(Regions) :-
 	nl,
 	format('     R1: ~d | R2: ~d | R3: ~d | R4: ~d | R5: ~d | R6: ~d | R7: ~d | R8: ~d | R9: ~d ', Regions), nl,nl.
-	
 
 display_player(Player):-
 	Player == 1,
@@ -40,6 +39,24 @@ display_player(Player):-
 display_player(Player):-
 	Player == 2,
 	write('     Player: Y '), nl, nl, nl.
+
+display_winner(Player):-
+	Player == 1,nl,
+	write('                              WINNER Player: X'), nl, nl, nl.
+
+display_winner(Player):-
+	Player == 2,nl,
+	write('                              WINNER Player: Y '), nl, nl, nl.
+
+display_winner(_):-
+	nl,
+	write('                                   TIED '), nl, nl, nl.
+
+display_points(X, Y):-
+	write('                                 X: '),
+	write(X), write(' - Y: '), write(Y),
+	nl.
+
 
 display_board(Board):-
 	print_rows(Board, 1), nl.
@@ -79,13 +96,24 @@ see_row([H|T], RowTmp, NewRow) :-
 	concat(RowTmp, [NewNumber], List),
 	see_row(T, List, NewRow).
 
-display_game(Board,Regions,Player) :- 
-	display_game_name, nl, nl, 
+display_game(Board,Regions,Player, X, Y) :- 
+	display_game_name, nl, nl,
+	display_points(X, Y), nl,nl, 
 	display_regions_points(Regions),
 	printColumnIdentifiers, nl,
 	switch_board(Board, B),
  	display_board(B),nl,
  	display_player(Player).
+
+
+display_end_game(Board, Regions, Winner, X, Y):-
+	display_game_name, nl, nl, 
+	display_points(X, Y), nl,nl, 
+	display_regions_points(Regions),
+	printColumnIdentifiers, nl,
+	switch_board(Board, B),
+ 	display_board(B),
+	display_winner(Winner).
 
 
 display_choices :-
