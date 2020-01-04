@@ -3,7 +3,8 @@
 :- include('print.pl').
 
 close_or_far(PuzzleNr):-
-    solve_puzzle(PuzzleNr, Board, Size ),
+    puzzle_size(PuzzleNr, Size),
+    solve_puzzle(PuzzleNr, Board, Size),
     print_board(Board, Size, 0), nl.
 
 
@@ -15,10 +16,10 @@ close_or_far(PuzzleNr):-
 % Pode ser 4 - 2º letra C
 % A posição do número na lista é a posição no tabuleiro da peça
 
-solve_puzzle(PuzzleNr, Board, Size ) :-
+solve_puzzle(PuzzleNr, Board, Size) :-
     init_board(PuzzleNr, Board, Size),
-    verify_row(Board, [], Size, 0),
     verify_col(Board, Size, 0),
+    verify_row(Board, [], Size, 0),
     labeling([], Board).
 
 % -------------- INIT BOARD ----------------------------------------------
@@ -68,14 +69,17 @@ verify_dist(List) :-
     element(F1, List, 2),
     element(C, List, 3),
     element(C1, List, 4),
-    F1 #\= F,
-    C1 #\= C,
+    F #\= F1,
+    C #\= C1,
+    abs(C1-C) #\= abs(F1-F),
     abs(C1-C) #< abs(F1-F).
+    
+
 
 
 % ----------- NUMBER OF LETTERS PER LIST ---------------------------------
 check_elements(List, Size) :-
     MaxZeroLine #= Size - 4,
-    verify_dist(List),
-    global_cardinality(List, [0-MaxZeroLine, 1-1, 2-1, 3-1, 4-1]).
+    global_cardinality(List, [0-MaxZeroLine, 1-1, 2-1, 3-1, 4-1]),
+    verify_dist(List).
 

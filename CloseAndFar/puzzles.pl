@@ -2,6 +2,7 @@
 
 
 %----------------------------- size: 7x7
+puzzle_size(1, 7).
 
 puzzle(1,L) :-
     element(4, L, 1),
@@ -13,6 +14,7 @@ puzzle(1,L) :-
     element(47, L, 3).
 
 %----------------------------- size: 6x6
+puzzle_size(1, 6).
 
 puzzle(2,L) :-
     element(1, L, 1),
