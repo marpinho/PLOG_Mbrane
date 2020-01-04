@@ -12,4 +12,6 @@ print_board([H|T], Size, N) :-
 
 map(0,' ').
 map(1,'F').
-map(2,'C').
+map(2,'F').
+map(3,'C').
+map(4,'C').

@@ -9,8 +9,10 @@ close_or_far(PuzzleNr):-
 
 % O domínio representa a peça em si
 % Pode ser 0 - espaço vazio
-% Pode ser 1 - A letra F
-% Pode ser 2 - A letra C
+% Pode ser 1 - 1º letra F
+% Pode ser 2 - 2º letra F
+% Pode ser 3 - 1º letra C
+% Pode ser 4 - 2º letra C
 % A posição do número na lista é a posição no tabuleiro da peça
 
 solve_puzzle(PuzzleNr, Board, Size ) :-
@@ -24,7 +26,7 @@ solve_puzzle(PuzzleNr, Board, Size ) :-
 init_board(PuzzleNr, Board, Size) :-
     ListSize #= Size * Size,
     length(Board, ListSize),
-    domain(Board, 0, 2),
+    domain(Board, 0, 4),
     puzzle(PuzzleNr, Board).
 
 
@@ -33,7 +35,6 @@ verify_row([], _List, _Size, _N).
 
 verify_row(Board, List, Size, Size) :-
     check_elements(List, Size),
-   % verify_dist(List, Size),
     verify_row(Board, [], Size, 0).
 
 verify_row([H|T], List, Size, N) :-
@@ -51,7 +52,6 @@ verify_col(Board, Size, N) :-
 
 verify_col_list(_Board, List, Size, _I, Size) :-
     check_elements(List, Size).
-    %verify_dist(List, Size).
 
 verify_col_list(Board, List, Size, I, C) :-
     element(I, Board, H),
@@ -63,21 +63,19 @@ verify_col_list(Board, List, Size, I, C) :-
 % -------------- CHECK DISTANCES ------------------------------------------
 % Ainda não está feito
 
-verify_dist(List, Size) :-
-    get_pos_f(List, F_pos, 0),
-    get_pos_g(List, C_pos, 0),
-    element(P, List, 1),
-    element(P1, List, 1),
-    element(O, List, 2),
-    element(O1, List, 2),
-    P #=< Size #/\ P1 #=< Size,
-    O #\= O1 #/\ O #=< Size #/\ O1 #=< Size,
-    abs(O1-O) #\= abs(P1-P),
-    abs(O1-O) #< abs(P1-P).
+verify_dist(List) :-
+    element(F, List, 1),
+    element(F1, List, 2),
+    element(C, List, 3),
+    element(C1, List, 4),
+    F1 #\= F,
+    C1 #\= C,
+    abs(C1-C) #< abs(F1-F).
 
 
 % ----------- NUMBER OF LETTERS PER LIST ---------------------------------
 check_elements(List, Size) :-
     MaxZeroLine #= Size - 4,
-    global_cardinality(List, [0-MaxZeroLine, 1-2, 2-2]).
+    verify_dist(List),
+    global_cardinality(List, [0-MaxZeroLine, 1-1, 2-1, 3-1, 4-1]).
 
