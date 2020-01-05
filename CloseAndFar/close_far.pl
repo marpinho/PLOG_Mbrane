@@ -4,9 +4,12 @@
 
 close_or_far(PuzzleNr):-
     puzzle_size(PuzzleNr,Size),
-    solve_puzzle(Board, Size),
-    print_board(Board, Size, 0), nl.
-
+    show_initial_puzzle(PuzzleNr, Size), nl,
+    reset_timer,
+    solve_puzzle(PuzzleNr, Board, Size),
+    write('SOLUTION: '), nl, nl,
+    print_board(Board, Size, 0), nl,
+    print_time.
 
 % O domínio representa a peça em si
 % Pode ser 0 - espaço vazio
@@ -16,23 +19,29 @@ close_or_far(PuzzleNr):-
 % Pode ser 4 - 2º letra C
 % A posição do número na lista é a posição no tabuleiro da peça
 
-solve_puzzle(Board, Size) :-
+solve_puzzle(PuzzleNr,Board, Size) :-
     init_board(PuzzleNr, Board, Size),
     verify_row(Board, [], Size, 0, 0),
     verify_col(Board, Size, 0),
     labeling([], Board).
 
 % -------------- INIT BOARD ----------------------------------------------
-
 init_board(PuzzleNr, Board, Size) :-
     ListSize #= Size * Size,
     length(Board, ListSize),
     domain(Board, 0, 4),
     puzzle(PuzzleNr, Board).
 
+% -------------- SHOW PUZZLE -------------------------------------
+show_initial_puzzle(PuzzleNr, Board, Size) :-
+    init_board(PuzzleNr, Board, Size),
+    labeling([], Board), nl,
+    write('PUZZLE: '), nl, nl,
+    print_board(Board, Size, 0).
 
+    
 % -------------- ROW RESTRICTIONS ------------------------------------------
-verify_row(_, _List, Size, _N, Size).
+verify_row(_Board, _List, Size, _N, Size).
 
 verify_row(Board, List, Size, Size, Row) :-
     R1 is Row + 1,
@@ -69,11 +78,13 @@ verify_dist(List) :-
     element(F1, List, 2),
     element(C, List, 3),
     element(C1, List, 4),
+    F #\= F1,
+    C #\= C1,
     abs(C1-C) #< abs(F1-F).
     
 % ------------ LETTERS PER LIST ---------------------------------
 check_elements(List, Size) :-
-    MaxZeroLine is Size - 4,
+    MaxZeroLine #= Size - 4,
     global_cardinality(List, [0-MaxZeroLine, 1-1, 2-1, 3-1, 4-1]),
     verify_dist(List).
 

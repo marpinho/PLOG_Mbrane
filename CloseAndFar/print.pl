@@ -14,3 +14,10 @@ map(1,'F').
 map(2,'F').
 map(3,'C').
 map(4,'C').
+
+
+reset_timer :- statistics(walltime,_).	
+print_time :-
+	statistics(walltime,[_,T]),
+	TS is ((T//10)*10)/1000,
+	nl, write('Time: '), write(TS), write('s'), nl, nl.
