@@ -33,9 +33,8 @@ init_board(PuzzleNr, Board, Size) :-
     puzzle(PuzzleNr, Board).
 
 % -------------- SHOW PUZZLE -------------------------------------
-show_initial_puzzle(PuzzleNr, Board, Size) :-
+show_initial_puzzle(PuzzleNr, Size) :-
     init_board(PuzzleNr, Board, Size),
-    labeling([], Board), nl,
     write('PUZZLE: '), nl, nl,
     print_board(Board, Size, 0).
 
