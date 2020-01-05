@@ -3,8 +3,8 @@
 :- include('print.pl').
 
 close_or_far(PuzzleNr):-
-    puzzle_size(PuzzleNr, Size),
-    solve_puzzle(PuzzleNr, Board, Size),
+    puzzle_size(PuzzleNr,Size),
+    solve_puzzle(Board, Size),
     print_board(Board, Size, 0), nl.
 
 
@@ -16,10 +16,10 @@ close_or_far(PuzzleNr):-
 % Pode ser 4 - 2º letra C
 % A posição do número na lista é a posição no tabuleiro da peça
 
-solve_puzzle(PuzzleNr, Board, Size) :-
+solve_puzzle(Board, Size) :-
     init_board(PuzzleNr, Board, Size),
+    verify_row(Board, [], Size, 0, 0),
     verify_col(Board, Size, 0),
-    verify_row(Board, [], Size, 0),
     labeling([], Board).
 
 % -------------- INIT BOARD ----------------------------------------------
@@ -32,16 +32,17 @@ init_board(PuzzleNr, Board, Size) :-
 
 
 % -------------- ROW RESTRICTIONS ------------------------------------------
-verify_row([], _List, _Size, _N).
+verify_row(_, _List, Size, _N, Size).
 
-verify_row(Board, List, Size, Size) :-
+verify_row(Board, List, Size, Size, Row) :-
+    R1 is Row + 1,
     check_elements(List, Size),
-    verify_row(Board, [], Size, 0).
+    verify_row(Board, [], Size, 0, R1).
 
-verify_row([H|T], List, Size, N) :-
+verify_row([H|T], List, Size, N, Row) :-
     N1 is N + 1,
     append(List, [H], L),
-    verify_row(T, L, Size, N1).
+    verify_row(T, L, Size, N1, Row).
 
 % -------------- COLUMN RESTRICTIONS -----------------------------------------
 verify_col(_Board, N, N).
@@ -62,24 +63,17 @@ verify_col_list(Board, List, Size, I, C) :-
     verify_col_list(Board, L, Size, I1, C1).
 
 % -------------- CHECK DISTANCES ------------------------------------------
-% Ainda não está feito
 
 verify_dist(List) :-
     element(F, List, 1),
     element(F1, List, 2),
     element(C, List, 3),
     element(C1, List, 4),
-    F #\= F1,
-    C #\= C1,
-    abs(C1-C) #\= abs(F1-F),
     abs(C1-C) #< abs(F1-F).
     
-
-
-
-% ----------- NUMBER OF LETTERS PER LIST ---------------------------------
+% ------------ LETTERS PER LIST ---------------------------------
 check_elements(List, Size) :-
-    MaxZeroLine #= Size - 4,
+    MaxZeroLine is Size - 4,
     global_cardinality(List, [0-MaxZeroLine, 1-1, 2-1, 3-1, 4-1]),
     verify_dist(List).
 
