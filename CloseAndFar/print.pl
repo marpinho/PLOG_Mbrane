@@ -1,4 +1,9 @@
+
+print_board(L, Size) :- 
+    print_board(L, Size, 0). 
+
 print_board([], _Size, _N).
+
 print_board(L, Size, Size) :- 
     nl,nl,
     print_board(L, Size, 0).

@@ -4,12 +4,13 @@
 
 close_or_far(PuzzleNr):-
     puzzle_size(PuzzleNr,Size),
-    show_initial_puzzle(PuzzleNr, Size), nl,
+    show_initial_puzzle(PuzzleNr, Size), nl,nl,
     reset_timer,
     solve_puzzle(PuzzleNr, Board, Size),
     write('SOLUTION: '), nl, nl,
     print_board(Board, Size, 0), nl,
-    print_time.
+    print_time,
+    fd_statistics.
 
 % O domínio representa a peça em si
 % Pode ser 0 - espaço vazio
